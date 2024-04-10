@@ -58,6 +58,7 @@ public class UserController {
 //        return new ResponseEntity<>(userService.signup(signupUser), HttpStatus.OK);
 //    }
 
+    // 회원가입(+이미지파일)
     @PostMapping("/auth/signup")
     public ResponseEntity<Object> signup(@RequestPart("signupUser") UserDto.SignupUser signupUser, @RequestPart("imageFile") MultipartFile imageFile) {
         // imagePath를 사용하여 회원가입 로직에 이미지 경로 포함
@@ -65,29 +66,44 @@ public class UserController {
         return new ResponseEntity<>(signupResult, HttpStatus.OK);
     }
 
-
     // 로그인
     @PostMapping("/auth/login")
     public ResponseEntity<Object> login(@RequestBody UserDto.LoginUser loginUser) {
         return new ResponseEntity<>(userService.login(loginUser), HttpStatus.OK);
     }
-    // 로그아웃
-    @DeleteMapping("/auth/logout")
+
+    // 로그아웃(실행안됨)
+    @DeleteMapping("/logout")
     public ResponseEntity<Object> logout(@RequestBody UserDto.LogoutUser logoutUser) {
         return new ResponseEntity<>(userService.logout(logoutUser), HttpStatus.OK);
     }
 
-    // 프로필 조회
-    @GetMapping("/auth/profile/{userId}")
-    public ResponseEntity<Object> getUsersInfo(@PathVariable Long userId) {
-        return new ResponseEntity<>(userService.getUserInfo(userId), HttpStatus.OK);
+    // 로그인 후, 회원 정보 조회
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Object> getUserInfo(@PathVariable Long userId) {
+        Object response = userService.getUserInfo(userId);
+
+        if (response instanceof UserDto.UserInfoResponse) {
+            UserDto.UserInfoResponse userInfoResponse = (UserDto.UserInfoResponse) response;
+            if (userInfoResponse.getUserId() == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(userInfoResponse);
+            } else {
+                return ResponseEntity.ok(userInfoResponse);
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    // 프로필 수정
-    @PatchMapping("/user/update")
+    // 로그인 후, 프로필 수정
+    @PatchMapping("/user/update/{userId}")
     public ResponseEntity<Object> fixUserInfo(@CurrentUser UserPrincipal userPrincipal,
-                                              @RequestBody UserDto.UpdateUser updateUser) {
-        return new ResponseEntity<>(userService.updateUser(userPrincipal, updateUser, null), HttpStatus.OK);
+                                              @RequestPart("updateUser") UserDto.UpdateUser updateUser,
+                                              @RequestPart("imageFile") MultipartFile imageFile) {
+        // imagePath를 사용하여 회원가입 로직에 이미지 경로 포함
+        Object updateResult = userService.updateUser(userPrincipal, updateUser, imageFile);
+        return new ResponseEntity<>(updateResult, HttpStatus.OK);
     }
+
 
 }

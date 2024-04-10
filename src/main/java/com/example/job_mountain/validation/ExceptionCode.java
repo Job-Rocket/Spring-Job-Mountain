@@ -9,7 +9,7 @@ public enum ExceptionCode {
     SIGNUP_DUPLICATED_EMAIL(DUPLICATED_VALUE, "A002", "EMAIL 중복"),
     SIGNUP_NOTSAME_PW(NOTSAME, "A003", "두 개의 PASSWORD 불일치"),
 
-    // 파일관련
+    // 파일 관련
     FILE_SIZE_EXCEED(INVALID_ACCESS, "F001", "FILE 크기 초과"),
     FILE_NOT_FOUND(NOT_FOUND_VALUE, "F002", "FILE이 없음"),
     FILE_STORAGE_ERROR(INVALID_ACCESS, "F003", "FILE 저장 오류"),
@@ -24,7 +24,7 @@ public enum ExceptionCode {
     /**
      * 회원정보
      */
-    USER_GET_OK(SUCCESS, "C000", "회원정보 있음"),
+    USER_FOUND(SUCCESS, "C000", "회원정보 있음"),
     USER_NOT_FOUND(NOT_FOUND_VALUE, "C001", "회원정보 없음"),
     USER_UPDATE_OK(SUCCESS, "C002", "회원정보 수정 성공"),
     USER_SEARCH_OK(SUCCESS, "C003", "회원 검색 성공"),

@@ -69,10 +69,11 @@ public class SiteUser {
     public void updateUser(UserDto.UpdateUser updateUser) {
         this.id = updateUser.getId();
         this.pw = updateUser.getPw();
+        this.email = updateUser.getEmail();
         this.age = updateUser.getAge();
+        this.imagePath = updateUser.getImagePath(); // 추가
         this.interest = updateUser.getInterest();
         // this.image = updateUser.getImage();
-        this.imagePath = updateUser.getImagePath(); // 추가
     }
 
 }

@@ -19,9 +19,9 @@ public class UserDto {
         String userName;
         String email;
         Integer age;
+        String imagePath; // 추가
         List<String> interest;
         // String image;
-        String imagePath; // 추가
     }
 
     @Getter
@@ -90,7 +90,7 @@ public class UserDto {
     @Getter
     public static class LogoutUser {
         Long userId;
-        String accessToken;
+        String refreshToken;
     }
     @Getter
     public static class LogoutResponse extends ResponseType {
@@ -111,16 +111,22 @@ public class UserDto {
         Integer age;
         List<String> interest;
 
+        public UserInfoResponse(ExceptionCode exceptionCode) {
+            super(exceptionCode);
+        }
+
         public UserInfoResponse(ExceptionCode exceptionCode, SiteUser user) {
             super(exceptionCode);
-            this.userId = user.getUserId();
-            this.userName = user.getUserName();
-            this.id = user.getId();
-            this.pw = user.getPw();
-            this.email = user.getEmail();
-            this.imagePath = user.getImagePath();
-            this.age = user.getAge();
-            this.interest = user.getInterest();
+            if (user != null) {
+                this.userId = user.getUserId();
+                this.userName = user.getUserName();
+                this.id = user.getId();
+                this.pw = user.getPw();
+                this.email = user.getEmail();
+                this.imagePath = user.getImagePath();
+                this.age = user.getAge();
+                this.interest = user.getInterest();
+            }
         }
     }
 
@@ -129,12 +135,10 @@ public class UserDto {
     public static class UpdateUser {
         String id;
         String pw;
+        String email;
         Integer age;
-        // String image;
         String imagePath; // 추가
         List<String> interest;
     }
-
-
 
 }

@@ -1,7 +1,6 @@
 package com.example.job_mountain.user.service;
 
 import com.example.job_mountain.common.RedisDao;
-import com.example.job_mountain.config.CacheNames;
 import com.example.job_mountain.security.TokenProvider;
 import com.example.job_mountain.security.UserPrincipal;
 import com.example.job_mountain.user.domain.SiteUser;
@@ -10,7 +9,6 @@ import com.example.job_mountain.user.dto.UserDto;
 import com.example.job_mountain.user.repository.UserRepository;
 import com.example.job_mountain.validation.ExceptionCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -151,12 +149,12 @@ public class UserService {
      }
 
     // 로그아웃
-    @CacheEvict(cacheNames = CacheNames.USERBYUSERID, key = "'login'+#p1")
-    @Transactional
+//    @CacheEvict(cacheNames = CacheNames.USERBYUSERID, key = "'login'+#p1")
+//    @Transactional
     public Object logout(UserDto.LogoutUser logoutUser) {
-        // 레디스에 accessToken 사용못하도록 등록
-        Long expiration = tokenProvider.getExpiration(logoutUser.getAccessToken());
-        redisDao.setBlackList(logoutUser.getAccessToken(), "logout", expiration);
+
+        Long expiration = tokenProvider.getExpiration(logoutUser.getRefreshToken());
+        redisDao.setBlackList(logoutUser.getRefreshToken(), "logout", expiration);
         if (redisDao.hasKey(String.valueOf(logoutUser.getUserId()))) {
             redisDao.deleteRefreshToken(String.valueOf(logoutUser.getUserId()));
         } else {
@@ -167,18 +165,25 @@ public class UserService {
          return new UserDto.LogoutResponse(ExceptionCode.LOGOUT_OK);
     }
 
+
     // 프로필 조회
+    public SiteUser findByUserId(Long userId) {
+        return userRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없음"));
+    }
     public Object getUserInfo(Long userId) {
-        Optional<SiteUser> findUser = userRepository.findByUserId(userId);
-        if (findUser.isEmpty()) {
-            return new UserDto.UserResponse(ExceptionCode.USER_NOT_FOUND);
+        Optional<SiteUser> optionalUser = userRepository.findById(userId);
+
+        if (optionalUser.isEmpty()) {
+            return new UserDto.UserInfoResponse(ExceptionCode.USER_NOT_FOUND);
+        } else {
+            SiteUser user = optionalUser.get();
+            return new UserDto.UserInfoResponse(ExceptionCode.USER_FOUND, user);
         }
-        SiteUser user = findUser.get();
-        return new UserDto.UserResponse(ExceptionCode.USER_GET_OK);
     }
 
+
     // 프로필 수정
-    public Object updateUser(UserPrincipal userPrincipal, UserDto.UpdateUser updateUser, MultipartFile file) {
+    public Object updateUser(UserPrincipal userPrincipal, UserDto.UpdateUser updateUser, MultipartFile imageFile) {
 
         Optional<SiteUser> findUser = userRepository.findByUserId(userPrincipal.getUserId());
         if (findUser.isEmpty()) {
@@ -186,21 +191,38 @@ public class UserService {
         }
         SiteUser user = findUser.get();
 
-        Optional<SiteUser> byNickname = userRepository.findById(updateUser.getId());
-        if (byNickname.isPresent() && ! byNickname.get().getUserId().equals(userPrincipal.getUserId())) {
-            return new UserDto.UserResponse(ExceptionCode.SIGNUP_DUPLICATED_ID);
+        Optional<SiteUser> byId = userRepository.findById(updateUser.getId()); // id 중복
+        if (byId.isPresent() && ! byId.get().getUserId().equals(userPrincipal.getUserId())) {
+            return new UserDto.UserResponse(ExceptionCode.SIGNUP_DUPLICATED_EMAIL);
         }
 
+        Optional<SiteUser> byEmail = userRepository.findByEmail(updateUser.getEmail()); // email 중복
+        if (byEmail.isPresent() && ! byEmail.get().getUserId().equals(userPrincipal.getUserId())) {
+            return new UserDto.UserResponse(ExceptionCode.SIGNUP_DUPLICATED_EMAIL);
+        }
         user.updateUser(updateUser);
+        try {
+            // 파일 저장 로직
+            String uploadDir = "src/main/resources/static/upload"; // 상대 경로 사용
+            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            Path filePath = uploadPath.resolve(fileName);
+            imageFile.transferTo(filePath);
 
-        /*if (file != null) {
-            String image = fileService.saveFile(user.getUserId(), file, "profile");
-            user.setImage(image);
-        } else {
-            user.setImage(null);
-        }*/
+            // 저장된 이미지 파일 경로를 user 객체에 설정
+            user.setImagePath(uploadDir + "/" + fileName);
 
-        userRepository.save(user);
+            userRepository.save(user);
+
+        } catch (IOException e) {
+            // IOException 처리 로직
+            e.printStackTrace();
+            // return new ResponseEntity<>("파일 저장 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new UserDto.UserResponse(ExceptionCode.FILE_STORAGE_ERROR);
+        }
 
         return new UserDto.UserResponse(ExceptionCode.USER_UPDATE_OK);
     }
