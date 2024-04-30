@@ -1,7 +1,6 @@
 package com.example.job_mountain.security;
 
 import com.example.job_mountain.company.domain.Company;
-import com.example.job_mountain.user.domain.SiteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,53 +12,42 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+
 @RequiredArgsConstructor
-public class UserPrincipal implements OAuth2User, UserDetails {
-    private Long userId;
+public class CompanyPrincipal implements OAuth2User, UserDetails {
+    private Long companyId;
     private String id;
     private String pw;
+    private String companyName;
     private Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
-    public UserPrincipal(Long userId, String id, String pw, Collection<? extends GrantedAuthority> authorities) {
-        this.userId = userId;
+    public CompanyPrincipal(Long companyId, String id, String pw, Collection<? extends GrantedAuthority> authorities) {
+        this.companyId = companyId;
         this.id = id;
         this.pw = pw;
         this.authorities = authorities;
     }
 
-    public static UserPrincipal create(Object user) {
-        if (user instanceof SiteUser) {
-            SiteUser siteUser = (SiteUser) user;
-            List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+    public static CompanyPrincipal create(Company company) {
+        List<GrantedAuthority> authorities = Collections.
+                singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 
-            return new UserPrincipal(
-                    siteUser.getUserId(),
-                    siteUser.getId(),
-                    siteUser.getPw(),
-                    authorities);
-        } else if (user instanceof Company) {
-            Company company = (Company) user;
-            List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-
-            return new UserPrincipal(
-                    company.getCompanyId(),
-                    company.getId(),
-                    company.getPw(),
-                    authorities);
-        } else {
-            return null;
-        }
+        return new CompanyPrincipal(
+                company.getCompanyId(),
+                company.getId(),
+                company.getPw(),
+                authorities);
     }
 
-    public static UserPrincipal create(Object user, Map<String, Object> attributes) {
-        UserPrincipal userPrincipal = UserPrincipal.create(user);
+    public static CompanyPrincipal create(Company company, Map<String, Object> attributes) {
+        CompanyPrincipal userPrincipal = CompanyPrincipal.create(company);
         userPrincipal.setAttributes(attributes);
         return userPrincipal;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getCompanyId() {
+        return companyId;
     }
 
     public String getId() {
@@ -72,9 +60,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     }
 
     @Override
-    public String getUsername() {
-        return id; // 수정
-    }
+    public String getUsername() { return companyName; }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -93,7 +79,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true; // 수정
+        return true;
     }
 
     @Override

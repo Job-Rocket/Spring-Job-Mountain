@@ -1,6 +1,5 @@
 package com.example.job_mountain.user.service;
 
-import com.example.job_mountain.common.RedisDao;
 import com.example.job_mountain.security.TokenProvider;
 import com.example.job_mountain.security.UserPrincipal;
 import com.example.job_mountain.user.domain.SiteUser;
@@ -34,22 +33,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final TokenProvider tokenProvider;
-    private final RedisDao redisDao;
 
 
-//    public SiteUser create(String userName, String id, String pw, String email, Integer age, List<String> interest) {
-//        SiteUser user = new SiteUser();
-//        user.setUserName(userName);
-//        user.setId(id);
-//        user.setPw(passwordEncoder.encode(pw));
-//        user.setEmail(email);
-//        user.setAge(age);
-//        user.setInterest(interest);
-//
-//        this.userRepository.save(user);
-//        return user;
-//    }
-    // 회원가입
     public TokenDto createToken(Authentication authentication, Long userId) {
 
         String accessToken = tokenProvider.createToken(authentication, Boolean.FALSE); // access
@@ -79,7 +64,7 @@ public class UserService {
 //
 //        return new UserDto.UserResponse(ExceptionCode.SIGNUP_CREATED_OK);
 //    }
-
+    // 회원가입
     public Object signup(UserDto.SignupUser signupUser, MultipartFile imageFile) {
         Optional<SiteUser> findUser = userRepository.findById(signupUser.getId());
         if (findUser.isPresent()) {
@@ -149,21 +134,19 @@ public class UserService {
      }
 
     // 로그아웃
-//    @CacheEvict(cacheNames = CacheNames.USERBYUSERID, key = "'login'+#p1")
-//    @Transactional
-    public Object logout(UserDto.LogoutUser logoutUser) {
-
-        Long expiration = tokenProvider.getExpiration(logoutUser.getRefreshToken());
-        redisDao.setBlackList(logoutUser.getRefreshToken(), "logout", expiration);
-        if (redisDao.hasKey(String.valueOf(logoutUser.getUserId()))) {
-            redisDao.deleteRefreshToken(String.valueOf(logoutUser.getUserId()));
-        } else {
-           // throw new IllegalArgumentException("이미 로그아웃한 유저입니다.");
-            return new UserDto.LogoutResponse(ExceptionCode.LOGOUT_INVALID);
-        }
-        // return ResponseEntity.ok("로그아웃 완료");
-         return new UserDto.LogoutResponse(ExceptionCode.LOGOUT_OK);
-    }
+//    public Object logout(UserDto.LogoutUser logoutUser) {
+//
+//        Long expiration = tokenProvider.getExpiration(logoutUser.getRefreshToken());
+//        redisDao.setBlackList(logoutUser.getRefreshToken(), "logout", expiration);
+//        if (redisDao.hasKey(String.valueOf(logoutUser.getUserId()))) {
+//            redisDao.deleteRefreshToken(String.valueOf(logoutUser.getUserId()));
+//        } else {
+//           // throw new IllegalArgumentException("이미 로그아웃한 유저입니다.");
+//            return new UserDto.LogoutResponse(ExceptionCode.LOGOUT_INVALID);
+//        }
+//        // return ResponseEntity.ok("로그아웃 완료");
+//         return new UserDto.LogoutResponse(ExceptionCode.LOGOUT_OK);
+//    }
 
 
     // 프로필 조회
@@ -190,17 +173,12 @@ public class UserService {
             return new UserDto.UserResponse(ExceptionCode.USER_NOT_FOUND);
         }
         SiteUser user = findUser.get();
-
-        Optional<SiteUser> byId = userRepository.findById(updateUser.getId()); // id 중복
-        if (byId.isPresent() && ! byId.get().getUserId().equals(userPrincipal.getUserId())) {
-            return new UserDto.UserResponse(ExceptionCode.SIGNUP_DUPLICATED_EMAIL);
-        }
-
-        Optional<SiteUser> byEmail = userRepository.findByEmail(updateUser.getEmail()); // email 중복
-        if (byEmail.isPresent() && ! byEmail.get().getUserId().equals(userPrincipal.getUserId())) {
-            return new UserDto.UserResponse(ExceptionCode.SIGNUP_DUPLICATED_EMAIL);
-        }
         user.updateUser(updateUser);
+
+        // 추가
+        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        user.setPw(encoder.encode(updateUser.getPw()));
+
         try {
             // 파일 저장 로직
             String uploadDir = "src/main/resources/static/upload"; // 상대 경로 사용

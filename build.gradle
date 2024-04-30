@@ -35,6 +35,7 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.10.1'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
+//	implementation "org.springframework.security:spring-security-config:5.6.0" // 추가
 
 //	implementation 'com.google.cloud:google-cloud-storage:2.20.1' // 또는 최신 버전
 //	implementation 'commons-io:commons-io:2.11.0' // 또는 최신 버전

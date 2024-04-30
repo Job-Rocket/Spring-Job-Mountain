@@ -19,45 +19,6 @@ public class UserController {
 
     private final UserService userService;
 
-//    @GetMapping("/signup")
-//    public String signup(UserCreateForm userCreateForm) {
-//        return "signup_form";
-//    }
-//
-//    @PostMapping("/signup")
-//    public ResponseEntity<Object> signup(@Valid UserCreateForm userCreateForm, BindingResult bindingResult) {
-//        if (bindingResult.hasErrors()) {
-//            return "signup_form";
-//        }
-//
-//        if (!userCreateForm.getPw().equals(userCreateForm.getPw2())) {
-//            bindingResult.rejectValue("pw2", "passwordInCorrect",
-//                    "2개의 패스워드가 일치하지 않습니다.");
-//            return new ResponseEntity<>(userService.signup(signupUser), HttpStatus.OK);
-//        }
-//
-//        try {
-//            userService.create(userCreateForm.getUserName(), userCreateForm.getId(),
-//                    userCreateForm.getPw(), userCreateForm.getEmail(), userCreateForm.getAge(), userCreateForm.getInterest());
-//        } catch (DataIntegrityViolationException e) {
-//            e.printStackTrace();
-//            bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
-//            return new ResponseEntity<>(userService.signup(signupUser), HttpStatus.OK);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            bindingResult.reject("signupFailed", e.getMessage());
-//            return new ResponseEntity<>(userService.signup(signupUser), HttpStatus.OK);
-//        }
-//
-//        return new ResponseEntity<>(userService.signup(signupUser), HttpStatus.OK);
-//    }
-
-    // 회원가입
-//    @PostMapping("/auth/signup")
-//    public Object signup(@RequestBody UserDto.SignupUser signupUser) {
-//        return new ResponseEntity<>(userService.signup(signupUser), HttpStatus.OK);
-//    }
-
     // 회원가입(+이미지파일)
     @PostMapping("/auth/signup")
     public ResponseEntity<Object> signup(@RequestPart("signupUser") UserDto.SignupUser signupUser, @RequestPart("imageFile") MultipartFile imageFile) {
@@ -73,10 +34,10 @@ public class UserController {
     }
 
     // 로그아웃(실행안됨)
-    @DeleteMapping("/logout")
-    public ResponseEntity<Object> logout(@RequestBody UserDto.LogoutUser logoutUser) {
-        return new ResponseEntity<>(userService.logout(logoutUser), HttpStatus.OK);
-    }
+//    @DeleteMapping("/logout")
+//    public ResponseEntity<Object> logout(@RequestBody UserDto.LogoutUser logoutUser) {
+//        return new ResponseEntity<>(userService.logout(logoutUser), HttpStatus.OK);
+//    }
 
     // 로그인 후, 회원 정보 조회
     @GetMapping("/user/{userId}")
@@ -96,7 +57,7 @@ public class UserController {
     }
 
     // 로그인 후, 프로필 수정
-    @PatchMapping("/user/update/{userId}")
+    @PatchMapping("/user/{userId}")
     public ResponseEntity<Object> fixUserInfo(@CurrentUser UserPrincipal userPrincipal,
                                               @RequestPart("updateUser") UserDto.UpdateUser updateUser,
                                               @RequestPart("imageFile") MultipartFile imageFile) {

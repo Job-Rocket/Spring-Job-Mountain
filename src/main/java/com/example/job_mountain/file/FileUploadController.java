@@ -50,15 +50,6 @@ public class FileUploadController {
                 "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     }
 
-//    @PostMapping("/file")
-//    public String handleFileUpload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
-//
-//        storageService.store(file);
-//        redirectAttributes.addFlashAttribute("message",
-//                file.getOriginalFilename() + "파일 업로드 성공 !");
-//
-//        return "redirect:/";
-//    }
     @PostMapping("/file")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
         try {

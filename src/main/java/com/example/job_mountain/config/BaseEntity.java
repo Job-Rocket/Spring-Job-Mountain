@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Setter
 @DynamicInsert
 @NoArgsConstructor
-public abstract class BaseEntity {
+public abstract class  BaseEntity {
     @CreatedDate
     @Column(updatable = false, name = "created_at", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

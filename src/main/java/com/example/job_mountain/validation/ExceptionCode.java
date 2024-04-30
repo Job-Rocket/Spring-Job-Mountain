@@ -3,6 +3,7 @@ package com.example.job_mountain.validation;
 import static com.example.job_mountain.validation.HttpStatus.*;
 
 public enum ExceptionCode {
+
     // 회원가입
     SIGNUP_CREATED_OK(CREATED, "A000", "회원가입 성공"),
     SIGNUP_DUPLICATED_ID(DUPLICATED_VALUE, "A001", "ID 중복"),
@@ -13,6 +14,7 @@ public enum ExceptionCode {
     FILE_SIZE_EXCEED(INVALID_ACCESS, "F001", "FILE 크기 초과"),
     FILE_NOT_FOUND(NOT_FOUND_VALUE, "F002", "FILE이 없음"),
     FILE_STORAGE_ERROR(INVALID_ACCESS, "F003", "FILE 저장 오류"),
+    FILE_DELETE_ERROR(INVALID_ACCESS, "F004", "FILE 삭제 오류"),
 
     // 로그인
     LOGIN_OK(SUCCESS, "B000", "로그인 성공"),
@@ -21,48 +23,39 @@ public enum ExceptionCode {
     LOGOUT_OK(SUCCESS, "B003", "로그아웃 성공"),
     LOGOUT_INVALID(NOT_FOUND_VALUE, "B004", "이미 로그아웃한 유저"),
 
-    /**
-     * 회원정보
-     */
+    // 회원 정보
     USER_FOUND(SUCCESS, "C000", "회원정보 있음"),
     USER_NOT_FOUND(NOT_FOUND_VALUE, "C001", "회원정보 없음"),
     USER_UPDATE_OK(SUCCESS, "C002", "회원정보 수정 성공"),
     USER_SEARCH_OK(SUCCESS, "C003", "회원 검색 성공"),
-    USER_SAVE_ID_OK(SUCCESS, "C004", "NICKNAME 수정 성공"),
 
     
-    /**
-     *  토큰
-     */
+    // 토큰
     INVALID_JWT_SIGNATURE(UNAUTHORIZED,"G000", "타당하지 않은 JWT 서명 오류"),
     INVALID_JWT_TOKEN(UNAUTHORIZED,"G001", "잘못된 JWT 토큰 오류"),
     EXPIRED_JWT_TOKEN(UNAUTHORIZED,"G002", "만료된 JWT 토큰 오류"),
     UNSUPPORTED_JWT_TOKEN(UNAUTHORIZED,"G003", "지원되지 않는 JWT 토큰 오류"),
     TOKEN_SUCCESS(SUCCESS, "G005", "토큰 확인 성공"),
 
-    /**
-     * interest 정보
-     */
-    ITEM_SAVE_OK(SUCCESS, "I000", "ITEM 저장 성공"),
-    ITEM_NOT_FOUND(NOT_FOUND_VALUE, "I001", "ITEM 정보 없음"),
-    ITEM_UPDATE_OK(SUCCESS, "I002", "ITEM 수정 성공"),
-    ITEM_GET_OK(SUCCESS, "I003", "ITEM 조회 성공"),
-    ITEM_DELETE_OK(SUCCESS, "I004", "ITEM 삭제 성공"),
 
+    // job 정보
+    JOB_SAVE_OK(SUCCESS, "J000", "JOB 저장 성공"),
+    JOB_SAVE_FAIL1(NOT_FOUND_VALUE, "J001", "JOB 제목 없음"),
+    JOB_SAVE_FAIL2(NOT_FOUND_VALUE, "J002", "JOB 내용 없음"),
+    JOB_NOT_FOUND(NOT_FOUND_VALUE, "J003", "JOB 정보 없음"),
+    JOB_UPDATE_OK(SUCCESS, "J004", "JOB 수정 성공"),
+    JOB_DELETE_OK(SUCCESS, "J005", "JOB 삭제 성공"),
+    JOB_GET_OK(SUCCESS, "J006", "JOB 불러오기 성공"),
 
-    /**
-     * post정보
-     */
-    POST_SAVE_OK(SUCCESS, "P000", "POST 저장 성공"),
-    POST_NOT_FOUND(NOT_FOUND_VALUE, "P001", "POST 정보 없음"),
-    POST_UPDATE_OK(SUCCESS, "P002", "POST 수정 성공"),
-    POST_DELETE_OK(SUCCESS, "P004", "POST 삭제 성공"),
-    POST_GET_OK(SUCCESS, "P003", "POST 불러오기 성공"),
-    /**
-     * job정보
-     */
-    JOB_SAVE_OK(SUCCESS, "N000", "JOB 저장 성공"),
-    JOB_GET_OK(SUCCESS, "N001", "JOB 불러오기 성공"),
+    // resume 정보
+    RESUME_SAVE_OK(SUCCESS, "R000", "RESUME(또는 SHORTS) 저장 성공"),
+    RESUME_SAVE_FAIL1(NOT_FOUND_VALUE, "R001", "RESUME(또는 SHORTS) 제목 없음"),
+    RESUME_SAVE_FAIL2(NOT_FOUND_VALUE, "R002", "RESUME(또는 SHORTS) 파일 없음"),
+    RESUME_UPDATE_OK(SUCCESS, "R003", "RESUME(또는 SHORTS) 수정 성공"),
+    RESUME_DELETE_OK(SUCCESS, "R004", "RESUME(또는 SHORTS) 삭제 성공"),
+    RESUME_NOT_FOUND(NOT_FOUND_VALUE, "R005", "RESUME(또는 SHORTS) 정보 없음"),
+    RESUME_GET_OK(SUCCESS, "R006", "RESUME(또는 SHORTS) 불러오기 성공"),
+
     /**
      * 잘못된 ExceptionCode
      */

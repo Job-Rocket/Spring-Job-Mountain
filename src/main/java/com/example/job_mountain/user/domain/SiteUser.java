@@ -1,6 +1,11 @@
 package com.example.job_mountain.user.domain;
 
+import com.example.job_mountain.comment.domain.Comment;
+import com.example.job_mountain.post.domain.Post;
+import com.example.job_mountain.resume.domain.Resume;
+import com.example.job_mountain.shorts.domain.Shorts;
 import com.example.job_mountain.user.dto.UserDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Builder;
@@ -8,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -49,6 +55,27 @@ public class SiteUser {
     @Column(length = 400)
     private String token;
 
+    // 취준생과 이력서 간의 일대다 관계
+    @JsonIgnore
+    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL)
+    private List<Resume> resumes = new ArrayList<>();
+
+    // 취준생과 이력서 간의 일대다 관계
+    @JsonIgnore
+    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL)
+    private List<Shorts> shorts = new ArrayList<>();
+
+    // 유저와 Post 간의 일대다 관계
+    @JsonIgnore
+    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL)
+    private List<Post> posts = new ArrayList<>();
+
+    // 유저와 Comment 간의 일대다 관계
+    @JsonIgnore
+    @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
+
+
     // builder
     @Builder
     public SiteUser(UserDto.SignupUser signupUser, String pw) {
@@ -67,9 +94,9 @@ public class SiteUser {
     }
 
     public void updateUser(UserDto.UpdateUser updateUser) {
-        this.id = updateUser.getId();
+        //this.id = updateUser.getId();
         this.pw = updateUser.getPw();
-        this.email = updateUser.getEmail();
+        //this.email = updateUser.getEmail();
         this.age = updateUser.getAge();
         this.imagePath = updateUser.getImagePath(); // 추가
         this.interest = updateUser.getInterest();

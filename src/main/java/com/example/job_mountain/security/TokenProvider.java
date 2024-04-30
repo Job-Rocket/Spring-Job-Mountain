@@ -1,5 +1,6 @@
 package com.example.job_mountain.security;
 
+import com.example.job_mountain.company.repository.CompanyRepository;
 import com.example.job_mountain.config.AppProperties;
 import com.example.job_mountain.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
@@ -30,6 +31,9 @@ public class TokenProvider {
 
     @Autowired
     private UserRepository userRepository;
+    //추가
+    @Autowired
+    private CompanyRepository companyRepository;
 
     @Value("${app.auth.tokenSecret}")
     private String secretKey;
@@ -51,7 +55,7 @@ public class TokenProvider {
 
     // 토큰 생성 메소드
     public String createToken(Authentication authentication, boolean refresh) {
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        Object userPrincipal = authentication.getPrincipal();
 
         int time;
         if (refresh) {
@@ -60,8 +64,14 @@ public class TokenProvider {
             time = (int) (appProperties.getAuth().getTokenExpirationDay() * 60 * 24); // 5일
         }
 
+        String userId = null;
+        if (userPrincipal instanceof UserPrincipal) {
+            userId = String.valueOf(((UserPrincipal) userPrincipal).getUserId());
+        } else {
+            userId = String.valueOf(((CompanyPrincipal) userPrincipal).getCompanyId());
+        }
         return Jwts.builder()
-                .setSubject(String.valueOf(userPrincipal.getUserId()))
+                .setSubject(userId)
                 .setIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
                 .setExpiration(Date.from(ZonedDateTime.now().plusDays(time).toInstant()))
                 .signWith( SignatureAlgorithm.HS256, appProperties.getAuth().getTokenSecret())
@@ -102,5 +112,18 @@ public class TokenProvider {
         // 현재시간
         long now = new Date().getTime();
         return (expiration.getTime() - now);
+    }
+
+    // 추가
+    // 토큰 생성 메소드
+
+    // 토큰으로 CompanyId 가져오기
+    public Long getCompanyIdFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(appProperties.getAuth().getTokenSecret())
+                .parseClaimsJws(token)
+                .getBody();
+
+        return Long.parseLong(claims.getSubject());
     }
 }
