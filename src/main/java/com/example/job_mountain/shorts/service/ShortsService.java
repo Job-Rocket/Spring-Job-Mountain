@@ -162,25 +162,39 @@ public class ShortsService {
         return new ShortsDto.ShortsListResponse(ExceptionCode.RESUME_GET_OK, all);
     }
 
+    // 비디오 이력서 호출
     public Object getShorts(Long id) {
         Optional<Shorts> optionalShorts = shortsRepository.findById(id);
         if (optionalShorts.isPresent()) {
             return optionalShorts.get();
         } else {
-            throw new IllegalArgumentException("Shorts not found with id: " + id);
+            return new ShortsDto.ShortsResponse(ExceptionCode.RESUME_NOT_FOUND);
         }
     }
 
-    // 조회수
+    // 조회시-조회수 증가
     public Object getView(Long id) {
         Optional<Shorts> optionalShorts = shortsRepository.findById(id);
         if (optionalShorts.isPresent()) {
             Shorts shorts = optionalShorts.get();
             shorts.setView(shorts.getView() + 1);
             this.shortsRepository.save(shorts);
-            return shorts;
+            return new ShortsDto.ShortsResponse(ExceptionCode.RESUME_GET_OK, shorts);
         } else {
-            throw new IllegalArgumentException("Shorts not found");
+            return new ShortsDto.ShortsResponse(ExceptionCode.RESUME_NOT_FOUND);
+        }
+    }
+
+    // 좋아요 증가
+    public Object addNumLikes(Long id) {
+        Optional<Shorts> optionalShorts = shortsRepository.findById(id);
+        if (optionalShorts.isPresent()) {
+            Shorts shorts = optionalShorts.get();
+            shorts.setNum_likes(shorts.getNum_likes() + 1);
+            this.shortsRepository.save(shorts);
+            return new ShortsDto.ShortsResponse(ExceptionCode.RESUME_NUMLIKES_OK);
+        } else {
+            return new ShortsDto.ShortsResponse(ExceptionCode.RESUME_NOT_FOUND);
         }
     }
 

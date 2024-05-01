@@ -88,6 +88,7 @@ public class JobService {
         return new JobDto.JobListResponse(ExceptionCode.JOB_GET_OK, all);
     }
 
+    // 채용공고 호출
     public Object getJob(Long jobId) {
         Optional<Job> optionalJob = jobRepository.findByJobId(jobId);
         if (optionalJob.isPresent()) {

@@ -55,6 +55,7 @@ public enum ExceptionCode {
     RESUME_DELETE_OK(SUCCESS, "R004", "RESUME(또는 SHORTS) 삭제 성공"),
     RESUME_NOT_FOUND(NOT_FOUND_VALUE, "R005", "RESUME(또는 SHORTS) 정보 없음"),
     RESUME_GET_OK(SUCCESS, "R006", "RESUME(또는 SHORTS) 불러오기 성공"),
+    RESUME_NUMLIKES_OK(SUCCESS, "R007", "RESUME(또는 SHORTS) 좋아요 증가 성공"),
 
     /**
      * 잘못된 ExceptionCode

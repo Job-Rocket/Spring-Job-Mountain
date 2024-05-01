@@ -162,25 +162,39 @@ public class ResumeService {
         return new ResumeDto.ResumeListResponse(ExceptionCode.RESUME_GET_OK, all);
     }
 
+    // 비디오 이력서 호출
     public Object getResume(Long id) {
         Optional<Resume> optionalResume = resumeRepository.findById(id);
         if (optionalResume.isPresent()) {
             return optionalResume.get();
         } else {
-            throw new IllegalArgumentException("Resume not found with id: " + id);
+            return new ResumeDto.ResumeResponse(ExceptionCode.RESUME_NOT_FOUND);
         }
     }
 
-    // 조회수
+    // 조회시-조회수 증가
     public Object getView(Long id) {
         Optional<Resume> optionalResume = resumeRepository.findById(id);
         if (optionalResume.isPresent()) {
             Resume resume = optionalResume.get();
             resume.setView(resume.getView() + 1);
             this.resumeRepository.save(resume);
-            return resume;
+            return new ResumeDto.ResumeResponse(ExceptionCode.RESUME_GET_OK, resume);
         } else {
-            throw new IllegalArgumentException("Resume not found");
+            return new ResumeDto.ResumeResponse(ExceptionCode.RESUME_NOT_FOUND);
+        }
+    }
+
+    // 좋아요 증가
+    public Object addNumLikes(Long id) {
+        Optional<Resume> optionalResume = resumeRepository.findById(id);
+        if (optionalResume.isPresent()) {
+            Resume resume = optionalResume.get();
+            resume.setNum_likes(resume.getNum_likes() + 1);
+            this.resumeRepository.save(resume);
+            return new ResumeDto.ResumeResponse(ExceptionCode.RESUME_NUMLIKES_OK);
+        } else {
+            return new ResumeDto.ResumeResponse(ExceptionCode.RESUME_NOT_FOUND);
         }
     }
 

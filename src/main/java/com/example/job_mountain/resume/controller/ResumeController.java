@@ -52,6 +52,17 @@ public class ResumeController {
         return new ResponseEntity<>(resumeService.findAllResumes(), HttpStatus.OK);
     }
 
+    // video 이력서 조회시, 조회수 증가
+    @GetMapping("/all/resume/{resumeId}")
+    public ResponseEntity<Object> getResume(@PathVariable Long resumeId) {
+        return new ResponseEntity<>(resumeService.getView(resumeId), HttpStatus.OK);
+    }
+
+    // video 이력서에서 좋아요 누르면, 좋아요 증가
+    @PostMapping("/all/resume/like/{resumeId}")
+    public ResponseEntity<Object> addResumenumlikes(@PathVariable Long resumeId) {
+        return new ResponseEntity<>(resumeService.addNumLikes(resumeId), HttpStatus.OK);
+    }
 
 }
 

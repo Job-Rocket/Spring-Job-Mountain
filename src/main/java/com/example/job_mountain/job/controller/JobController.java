@@ -14,7 +14,7 @@ public class JobController {
     private final JobService jobService;
 
     //글 작성
-    @PostMapping("/job/{companyId}")
+    @PostMapping("/company/job/{companyId}")
     public ResponseEntity<Object> savePost(@PathVariable Long companyId,
                                            @RequestBody JobDto.CreateJob createJob) {
         return new ResponseEntity<>(jobService.createPost(companyId, createJob), HttpStatus.OK);
@@ -22,7 +22,7 @@ public class JobController {
 
 
     //글 수정
-    @PatchMapping("/job/{companyId}/{jobId}")
+    @PatchMapping("/company/job/{companyId}/{jobId}")
     public ResponseEntity<Object> updateJob(@PathVariable Long companyId,
                                             @PathVariable Long jobId,
                                             @RequestBody JobDto.CreateJob createJob) {
@@ -30,7 +30,7 @@ public class JobController {
     }
 
     //글 삭제
-    @DeleteMapping("/job/{companyId}/{jobId}")
+    @DeleteMapping("/company/job/{companyId}/{jobId}")
     public ResponseEntity<Object> deletePost(@PathVariable Long companyId,
                                              @PathVariable Long jobId) {
         return new ResponseEntity<>(jobService.deleteJob(companyId, jobId), HttpStatus.OK);
@@ -43,7 +43,7 @@ public class JobController {
     }
 
     // 조회수
-    @GetMapping("/job/{jobId}")
+    @GetMapping("/all/job/{jobId}")
     public ResponseEntity<Object> getJob(@PathVariable Long jobId) {
         // Job 조회 로직 호출
         Object result = jobService.getJob(jobId);

@@ -132,8 +132,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                     System.out.println("112");
                     UserDetails userDetails = null;
 
-                    if (request.getRequestURI().startsWith("/user") || request.getRequestURI().startsWith("/company")
-                    || request.getRequestURI().startsWith("/job") || request.getRequestURI().startsWith("/resume")) {
+                    // 토큰 확인 url
+                    if (request.getRequestURI().startsWith("/user") || request.getRequestURI().startsWith("/company")) {
                         System.out.println("113");
                         Long userId = tokenProvider.getUserIdFromToken(jwt);
                         userDetails = customUserDetailsService.loadUserById(userId);

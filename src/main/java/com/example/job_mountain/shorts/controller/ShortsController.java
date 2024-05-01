@@ -48,6 +48,16 @@ public class ShortsController {
         return new ResponseEntity<>(shortsService.findAllShorts(), HttpStatus.OK);
     }
 
+    // video 이력서 조회시, 조회수 증가
+    @GetMapping("/all/shorts/{shortsId}")
+    public ResponseEntity<Object> getShorts(@PathVariable Long shortsId) {
+        return new ResponseEntity<>(shortsService.getView(shortsId), HttpStatus.OK);
+    }
 
+    // video 이력서에서 좋아요 누르면, 좋아요 증가
+    @PostMapping("/all/shorts/like/{shortsId}")
+    public ResponseEntity<Object> addShortsnumlikes(@PathVariable Long shortsId) {
+        return new ResponseEntity<>(shortsService.addNumLikes(shortsId), HttpStatus.OK);
+    }
 }
 
