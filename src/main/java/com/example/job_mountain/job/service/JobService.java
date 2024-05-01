@@ -94,7 +94,7 @@ public class JobService {
         if (optionalJob.isPresent()) {
             return optionalJob.get();
         } else {
-            throw new IllegalArgumentException("Job not found with jobId: " + jobId);
+            return new JobDto.JobResponse(ExceptionCode.JOB_NOT_FOUND);
         }
     }
 
@@ -105,9 +105,9 @@ public class JobService {
             Job job = optionalJob.get();
             job.setView(job.getView() + 1);
             this.jobRepository.save(job);
-            return job;
+            return new JobDto.JobResponse(ExceptionCode.JOB_GET_OK, job);
         } else {
-            throw new IllegalArgumentException("Job not found");
+            return new JobDto.JobResponse(ExceptionCode.JOB_NOT_FOUND);
         }
     }
 }

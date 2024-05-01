@@ -42,13 +42,10 @@ public class JobController {
         return new ResponseEntity<>(jobService.findAllJobs(), HttpStatus.OK);
     }
 
-    // 조회수
+    // 채용공고 조회시-조회수 증가
     @GetMapping("/all/job/{jobId}")
     public ResponseEntity<Object> getJob(@PathVariable Long jobId) {
-        // Job 조회 로직 호출
-        Object result = jobService.getJob(jobId);
-        jobService.getView(jobId);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(jobService.getView(jobId), HttpStatus.OK);
     }
 
 }
