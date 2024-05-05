@@ -1,4 +1,4 @@
-name: jobmountain-github-action-test CD
+name: Spring_Job_Mountain CD
 
 on:
   push:
