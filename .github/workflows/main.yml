@@ -44,12 +44,12 @@ jobs:
 
         # Beanstalk Deploy 플러그인 사용
       - name: Beanstalk Deploy
-        uses: einaregilsson/beanstalk-deploy@v14
+        uses: einaregilsson/beanstalk-deploy@v22
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }} # github secrets로 등록한 값 사용
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # github secrets로 등록한 값 사용
-          application-name: earth-github-action-test # EB application 이름
-          environment_name: dev-earth-github-action-test # EB environment 이름
+          application-name: Job-Mountain # EB application 이름
+          environment_name: Job-Mountain-env-1 # EB environment 이름
           version_label: Github Action-${{steps.current-time.outputs.formattedTime}} # 배포 버전은 타임스탬프를 이용하여 구분
           region: ap-northeast-2
           deployment_package: deploy/deploy.zip
