@@ -4,6 +4,7 @@ import com.example.job_mountain.company.domain.Company;
 import com.example.job_mountain.config.BaseEntity;
 import com.example.job_mountain.job.dto.JobDto;
 import com.example.job_mountain.resume.domain.Resume;
+import com.example.job_mountain.shorts.domain.Shorts;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -44,9 +45,16 @@ public class Job extends BaseEntity {
     private int view;//조회수
     // private String RegistNum; //등록일자
 
+    // 이력서(resume) 테이블과 일대다매핑
     @JsonIgnore
-    @OneToMany(mappedBy = "job", cascade = CascadeType.REMOVE) // 이력서(resume) 테이블과 일대다매핑
+    @OneToMany(mappedBy = "job", cascade = CascadeType.REMOVE)
     private List<Resume> resumes;
+
+    // 쇼츠(shorts) 테이블과 일대다매핑
+    @JsonIgnore
+    @OneToMany(mappedBy = "job", cascade = CascadeType.REMOVE)
+    private List<Shorts> shorts;
+
 
     // 추가
     @Builder
