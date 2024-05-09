@@ -83,7 +83,7 @@ public class SecurityConfig {
         System.out.println("auth");
         http
                         .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/auth/**", "/company/**", "/user/**", "/all/**").permitAll()
+                        .requestMatchers("/auth/**", "/company/**", "/user/**", "/all/**", "/health").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .cors(httpSecurityCorsConfigurer ->
@@ -115,67 +115,3 @@ public class SecurityConfig {
     }
 
 }
-
-//package com.example.job_mountain.config;
-//
-//import com.example.job_mountain.security.CustomUserDetailsService;
-//import com.example.job_mountain.security.TokenAuthenticationFilter;
-//import com.example.job_mountain.security.handler.JwtAccessDeniedHandler;
-//import com.example.job_mountain.security.handler.JwtAuthenticationEntryPoint;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.context.annotation.Import;
-//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-//import org.springframework.security.config.http.SessionCreationPolicy;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
-//import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
-//import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-//
-//@Configuration
-//@Import(GlobalExceptionHandler.class)
-//public class SecurityConfig {
-//
-//    @Autowired
-//    private CustomUserDetailsService customUserDetailsService;
-//    @Autowired
-//    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-//    @Autowired
-//    private JwtAccessDeniedHandler jwtAccessDeniedHandler;
-//
-//    @Bean
-//    public TokenAuthenticationFilter tokenAuthenticationFilter() {
-//        return new TokenAuthenticationFilter();
-//    }
-//
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
-//
-//    @Bean
-//    public TokenAuthenticationFilter companyTokenAuthenticationFilter() {
-//        return new TokenAuthenticationFilter();
-//    }
-//
-//    @Bean
-//    public void configureGlobal(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeRequests((authorize) -> authorize
-//                        .antMatchers("/auth/**").permitAll()
-//                        .anyRequest().authenticated()
-//                )
-//                .csrf().disable()
-//                .httpBasic()
-//                .and()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .exceptionHandling().authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-//                .accessDeniedHandler(new BearerTokenAccessDeniedHandler());
-//
-//        http.addFilterBefore(companyTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter);
-//
-//    }
-//}
