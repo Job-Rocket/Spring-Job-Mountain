@@ -53,8 +53,9 @@ public class Company {
     @Column(length = 400)
     private String token;
 
+    // 채용공고테이블(job)과 일대다매핑
     @JsonIgnore
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL) // 채용공고테이블(job)과 일대다매핑
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Job> jobs = new ArrayList<>();
 
     @Builder
