@@ -79,7 +79,7 @@ jobs:
       S3_BUCKET_NAME: ${{secrets.S3_BUCKET_NAME}}
       S3_ACCESS_KEY: ${{secrets.S3_ACCESS_KEY}}
       S3_SECRET_KEY: ${{secrets.S3_SECRET_KEY}}
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
+    # if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
 
     steps:
       - name: Checkout
