@@ -5,10 +5,8 @@ permissions:
   pull-requests: write
 
 on:
-  pull_request:
-    types:
-      [ opened, synchronize, reopened, closed ]
-  workflow_dispatch: # (2) 수동 실행
+  push:
+    branches: [ develop ] # develop에 push될 때 CD가 일어나도록 핸들링
 
 jobs:
   test:
@@ -17,7 +15,6 @@ jobs:
       S3_BUCKET_NAME: ${{secrets.S3_BUCKET_NAME}}
       S3_ACCESS_KEY: ${{secrets.S3_ACCESS_KEY}}
       S3_SECRET_KEY: ${{secrets.S3_SECRET_KEY}}
-    if: startsWith(github.head_ref, 'feature/')
 
     steps:
       - name: Checkout
@@ -79,7 +76,6 @@ jobs:
       S3_BUCKET_NAME: ${{secrets.S3_BUCKET_NAME}}
       S3_ACCESS_KEY: ${{secrets.S3_ACCESS_KEY}}
       S3_SECRET_KEY: ${{secrets.S3_SECRET_KEY}}
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop'
 
     steps:
       - name: Checkout
