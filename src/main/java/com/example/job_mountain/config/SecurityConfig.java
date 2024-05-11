@@ -83,7 +83,7 @@ public class SecurityConfig {
         System.out.println("auth");
         http
                         .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/auth/**", "/company/**", "/user/**", "/all/**", "/health/**", "/index/**").permitAll()
+                        .requestMatchers("/auth/**", "/company/**", "/user/**", "/all/**", "/health/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .cors(httpSecurityCorsConfigurer ->

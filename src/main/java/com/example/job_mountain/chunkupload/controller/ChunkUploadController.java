@@ -55,13 +55,4 @@ public class ChunkUploadController {
                 ResponseEntity.ok("File uploaded successfully") :
                 ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).build();
     }
-
-    @GetMapping("/health")
-    public String getHealthCheck() {
-        return "It Works!!!";
-    }
-    @GetMapping("/index")
-    public String getIndex() {
-        return "Get Index Ok!!!";
-    }
 }
