@@ -60,4 +60,8 @@ public class ChunkUploadController {
     public String getHealthCheck() {
         return "It Works!!!";
     }
+    @GetMapping("/index")
+    public String getIndex() {
+        return "Get Index Ok!!!";
+    }
 }
