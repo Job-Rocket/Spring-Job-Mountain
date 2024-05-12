@@ -131,11 +131,11 @@ jobs:
           aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
           aws_secret_key: ${{secrets.AWS_SECRET_KEY}}
           application_name: Job-Mountain
-          environment_name: Job-Mountain-env-1
+          environment_name: Job-Mountain-env
           version_label: github-action-${{steps.current-time.outputs.formattedTime}}
           region: ap-northeast-2
           deployment_package: deploy/deploy.zip
-          wait_for_environment_recovery: 300
+          wait_for_environment_recovery: 600
 
       - name: Cleanup Gradle Cache
         if: ${{ always() }}
