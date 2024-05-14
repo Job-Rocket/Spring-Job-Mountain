@@ -33,14 +33,6 @@ dependencies {
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 	implementation 'com.google.code.gson:gson:2.10.1'
-	//implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	//implementation 'org.springframework.boot:spring-boot-starter-cache'
-//	implementation "org.springframework.security:spring-security-config:5.6.0" // 추가
-
-//	implementation 'com.google.cloud:google-cloud-storage:2.20.1' // 또는 최신 버전
-//	implementation 'commons-io:commons-io:2.11.0' // 또는 최신 버전
-//	implementation 'com.google.firebase:firebase-admin:9.1.1' // 또는 최신 버전
-//	implementation 'org.projectlombok:lombok:1.18.26' // 또는 최신 버전
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
