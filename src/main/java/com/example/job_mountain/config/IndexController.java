@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/index")
+@RequestMapping("/")
 public class IndexController {
 
     @GetMapping
