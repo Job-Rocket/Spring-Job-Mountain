@@ -1,8 +1,4 @@
 spring:
-  datasource:
-    url: jdbc:mysql://${rds.hostname}:${rds.port}/${rds.dbname}
-    username: ${rds.username}
-    password: ${rds.password}
   jpa:
     hibernate:
       ddl-auto: update
