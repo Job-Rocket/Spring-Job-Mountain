@@ -1,7 +1,7 @@
 server:
   port: 8081
 spring:
-  profile:
+  profiles:
     active: jmdev
   datasource:
     url: "jdbc:mysql://localhost:3307/job_mountain2"
