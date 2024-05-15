@@ -1,0 +1,43 @@
+server:
+  port: 8081
+spring:
+  profile:
+    active: jmdev
+  datasource:
+    url: "jdbc:mysql://localhost:3307/job_mountain2"
+    username: "root"
+    password: "75213992"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  servlet:
+      multipart:
+        max-file-size: 512MB
+        max-request-size: 512MB
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  main:
+    allow-bean-definition-overriding: true
+
+app:
+  auth:
+    tokenSecret: BUkQrTqYiK09DWSXkMW6XNOdWzK5XTMQXIexEXUSvUg=
+    tokenExpirationDay: 30
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
