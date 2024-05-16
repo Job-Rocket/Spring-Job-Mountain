@@ -50,7 +50,6 @@ public class SecurityConfig {
         this.tokenProvider = tokenProvider;
         this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
     }
-    //
 
     @Bean
     public TokenAuthenticationFilter tokenAuthenticationFilter() {
@@ -105,8 +104,8 @@ public class SecurityConfig {
 
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:8080");
-        configuration.setAllowedMethods(Arrays.asList("GET","POST", "OPTIONS", "PUT","DELETE"));
+        configuration.addAllowedOrigin("*");
+        configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH", "OPTIONS", "PUT","DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true); // 이 부분을 추가하세요.
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
