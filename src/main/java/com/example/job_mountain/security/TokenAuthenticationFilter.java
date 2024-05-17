@@ -49,10 +49,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 } else {
                     System.out.println("112");
                     UserDetails userDetails = null;
+                    System.out.println(request.getRequestURI());
 
                     // 토큰 확인 url
-                    if (request.getRequestURI().startsWith("http://jobdongsani.ap-northeast-2.elasticbeanstalk.com:8080/user")
-                            || request.getRequestURI().startsWith("http://jobdongsani.ap-northeast-2.elasticbeanstalk.com:8080/company")) {
+                    if (request.getRequestURI().startsWith("/user") || request.getRequestURI().startsWith("/company")) {
                         System.out.println("113");
                         Long userId = tokenProvider.getUserIdFromToken(jwt);
                         userDetails = customUserDetailsService.loadUserById(userId);
