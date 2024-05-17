@@ -39,15 +39,14 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException {
         try {
 
-            System.out.println("112");
+            System.out.println("111");
             String jwt = getJwtFromRequest(request);
             System.out.println(getJwtFromRequest(request) + "---------" + LocalDate.now());
             if (StringUtils.hasText(jwt)) {
-                System.out.println("11");
+                System.out.println("112");
                 if (tokenProvider.isTokenExpired(jwt)) {
                     createResponse(ExceptionCode.EXPIRED_JWT_TOKEN, response);
                 } else {
-                    System.out.println("112");
                     UserDetails userDetails = null;
                     System.out.println(request.getRequestURI());
 
