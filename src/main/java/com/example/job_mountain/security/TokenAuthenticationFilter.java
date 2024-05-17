@@ -51,14 +51,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                     UserDetails userDetails = null;
 
                     // 토큰 확인 url
-                    if (request.getRequestURI().startsWith("/user") || request.getRequestURI().startsWith("/company")) {
+                    if (request.getRequestURI().startsWith("http://jobdongsani.ap-northeast-2.elasticbeanstalk.com:8080/user")
+                            || request.getRequestURI().startsWith("http://jobdongsani.ap-northeast-2.elasticbeanstalk.com:8080/company")) {
                         System.out.println("113");
                         Long userId = tokenProvider.getUserIdFromToken(jwt);
                         userDetails = customUserDetailsService.loadUserById(userId);
                     } else {
                         System.out.println("114");
-//                        Long userId = tokenProvider.getUserIdFromToken(jwt);
-//                        userDetails = customUserDetailsService.loadUserById(userId);
                     }
 
                     if (userDetails == null) {
