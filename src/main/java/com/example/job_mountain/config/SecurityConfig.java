@@ -102,9 +102,12 @@ public class SecurityConfig {
         return http.build();
     }
 
+
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedOrigin("http://jobdongsani.ap-northeast-2.elasticbeanstalk.com:8080");
+        configuration.addAllowedOrigin("http:3.36.211.221");
         configuration.addAllowedOrigin ("*");
         configuration.setAllowedMethods(Arrays.asList("GET","POST","PATCH", "OPTIONS", "PUT","DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
