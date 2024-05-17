@@ -88,7 +88,8 @@ public class SecurityConfig {
                 .cors(httpSecurityCorsConfigurer ->
                         httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource())
                 )
-                .csrf((csrf) -> csrf.ignoringRequestMatchers("/**"))
+                // .csrf((csrf) -> csrf.ignoringRequestMatchers("/**"))
+                .csrf((csrfConfig) -> csrfConfig.disable())
                 .authenticationManager(authenticationManager())
                 .httpBasic(Customizer.withDefaults())
                 //.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
