@@ -1,5 +1,6 @@
 package com.example.job_mountain.user.service;
 
+import com.example.job_mountain.file.FileService;
 import com.example.job_mountain.security.TokenProvider;
 import com.example.job_mountain.security.UserPrincipal;
 import com.example.job_mountain.user.domain.SiteUser;
@@ -16,13 +17,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 @Service
@@ -33,6 +29,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final TokenProvider tokenProvider;
+    private final FileService fileService;
 
 
     public TokenDto createToken(Authentication authentication, Long userId) {
@@ -46,24 +43,6 @@ public class UserService {
                 .build();
     }
 
-//    public Object signup(UserDto.SignupUser signupUser) {
-//
-//        Optional<SiteUser> findUser = userRepository.findById(signupUser.getId());
-//        if (findUser.isPresent()) {
-//            return new UserDto.DuplicateUserResponse(ExceptionCode.SIGNUP_DUPLICATED_ID); // ID 중복
-//        }
-//
-//        findUser = userRepository.findByEmail(signupUser.getEmail());
-//        if (findUser.isPresent()) {
-//            return new UserDto.DuplicateUserResponse(ExceptionCode.SIGNUP_DUPLICATED_EMAIL); // Email 중복
-//        }
-//
-//        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//        SiteUser user = new SiteUser(signupUser, encoder.encode(signupUser.getPw()));
-//        userRepository.save(user);
-//
-//        return new UserDto.UserResponse(ExceptionCode.SIGNUP_CREATED_OK);
-//    }
     // 회원가입
     public Object signup(UserDto.SignupUser signupUser, MultipartFile imageFile) {
         Optional<SiteUser> findUser = userRepository.findById(signupUser.getId());
@@ -79,31 +58,15 @@ public class UserService {
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         SiteUser user = new SiteUser(signupUser, encoder.encode(signupUser.getPw()));
 
-        try {
-            // 파일 저장 로직
-            String uploadDir = "src/main/resources/static/upload"; // 상대 경로 사용
-            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            Path filePath = uploadPath.resolve(fileName);
-            imageFile.transferTo(filePath);
-
-            // 저장된 이미지 파일 경로를 user 객체에 설정
-            user.setImagePath(uploadDir + "/" + fileName);
-
-            userRepository.save(user);
-        } catch (IOException e) {
-            // IOException 처리 로직
-            e.printStackTrace();
-            // return new ResponseEntity<>("파일 저장 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
-            return new UserDto.UserResponse(ExceptionCode.FILE_STORAGE_ERROR);
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String image = fileService.saveFile(user.getUserId(), imageFile, "user");
+            user.setImagePath(image);
+        } else {
+            user.setImagePath(null);
         }
-
+        userRepository.save(user);
         return new UserDto.UserResponse(ExceptionCode.SIGNUP_CREATED_OK);
     }
-
 
 
     // 로그인
@@ -148,7 +111,6 @@ public class UserService {
 //         return new UserDto.LogoutResponse(ExceptionCode.LOGOUT_OK);
 //    }
 
-
     // 프로필 조회
     public SiteUser findByUserId(Long userId) {
         return userRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없음"));
@@ -175,32 +137,17 @@ public class UserService {
         SiteUser user = findUser.get();
         user.updateUser(updateUser);
 
-        // 추가
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         user.setPw(encoder.encode(updateUser.getPw()));
 
-        try {
-            // 파일 저장 로직
-            String uploadDir = "src/main/resources/static/upload"; // 상대 경로 사용
-            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            Path filePath = uploadPath.resolve(fileName);
-            imageFile.transferTo(filePath);
-
-            // 저장된 이미지 파일 경로를 user 객체에 설정
-            user.setImagePath(uploadDir + "/" + fileName);
-
-            userRepository.save(user);
-
-        } catch (IOException e) {
-            // IOException 처리 로직
-            e.printStackTrace();
-            // return new ResponseEntity<>("파일 저장 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
-            return new UserDto.UserResponse(ExceptionCode.FILE_STORAGE_ERROR);
+        // 회원정보나 파일 중 하나라도 있는 경우만 게시글을 저장함
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String image = fileService.saveFile(user.getUserId(), imageFile, "user");
+            user.setImagePath(image);
+        } else {
+            user.setImagePath(null);
         }
+        userRepository.save(user);
 
         return new UserDto.UserResponse(ExceptionCode.USER_UPDATE_OK);
     }

@@ -22,7 +22,7 @@ public class UserDto {
         Integer age;
         String imagePath; // 추가
         List<String> interest;
-        // String image;
+//        String image;
     }
 
     @Getter
@@ -109,6 +109,7 @@ public class UserDto {
         String id;
         String pw;
         String email;
+//        String image;
         String imagePath;
         Integer age;
         List<String> interest;
@@ -135,9 +136,7 @@ public class UserDto {
     // 프로필 수정
     @Getter
     public static class UpdateUser {
-        //String id;
         String pw;
-        //String email;
         Integer age;
         String imagePath; // 추가
         List<String> interest;

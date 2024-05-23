@@ -85,7 +85,7 @@ public class SiteUser {
         this.email = signupUser.getEmail();
         this.age = signupUser.getAge();
         this.interest = signupUser.getInterest();
-        // this.image = signupUser.getImage();
+        //this.image = signupUser.getImage();
         this.imagePath = signupUser.getImagePath();
     }
 
@@ -94,13 +94,11 @@ public class SiteUser {
     }
 
     public void updateUser(UserDto.UpdateUser updateUser) {
-        //this.id = updateUser.getId();
         this.pw = updateUser.getPw();
-        //this.email = updateUser.getEmail();
         this.age = updateUser.getAge();
-        this.imagePath = updateUser.getImagePath(); // 추가
         this.interest = updateUser.getInterest();
-        // this.image = updateUser.getImage();
+//        this.image = updateUser.getImage();
+        this.imagePath = updateUser.getImagePath(); // 추가
     }
 
 }

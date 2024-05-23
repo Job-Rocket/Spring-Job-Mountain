@@ -3,6 +3,7 @@ package com.example.job_mountain.company.service;
 import com.example.job_mountain.company.domain.Company;
 import com.example.job_mountain.company.dto.CompanyDto;
 import com.example.job_mountain.company.repository.CompanyRepository;
+import com.example.job_mountain.file.FileService;
 import com.example.job_mountain.security.TokenProvider;
 import com.example.job_mountain.user.dto.TokenDto;
 import com.example.job_mountain.validation.ExceptionCode;
@@ -15,13 +16,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 @Service
@@ -31,6 +27,7 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final AuthenticationManager authenticationManager;
     private final TokenProvider tokenProvider;
+    private final FileService fileService;
 
     public TokenDto createToken(Authentication authentication, Long companyId) {
 
@@ -53,46 +50,30 @@ public class CompanyService {
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         Company company = new Company(signupCompany, encoder.encode(signupCompany.getPw()));
 
-        try {
-            // 파일 저장 로직
-            String uploadDir = "src/main/resources/static/upload"; // 상대 경로 사용
-            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            Path filePath = uploadPath.resolve(fileName);
-            imageFile.transferTo(filePath);
-
-            // 저장된 이미지 파일 경로를 company 객체에 설정
-            company.setImagePath(uploadDir + "/" + fileName);
-
-            companyRepository.save(company);
-        } catch (IOException e) {
-            // IOException 처리 로직
-            e.printStackTrace();
-            // return new ResponseEntity<>("파일 저장 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
-            return new CompanyDto.CompanyResponse(ExceptionCode.FILE_STORAGE_ERROR);
+        if(imageFile != null&& !imageFile.isEmpty()){
+            String image = fileService.saveFile(company.getCompanyId(),imageFile,"company");
+            company.setImagePath(image);
+        }else{
+            company.setImagePath(null);
         }
-
+        companyRepository.save(company);
         return new CompanyDto.CompanyResponse(ExceptionCode.SIGNUP_CREATED_OK);
     }
 
 
     // 로그인
     public Object login(CompanyDto.LoginCompany loginCompany) {
-
         Optional<Company> findUser = companyRepository.findById(loginCompany.getId());
 
-        Company companyUser = findUser.get();
-        System.out.println("111221");
         if (findUser.isEmpty()) {
             return new CompanyDto.DuplicateCompanyResponse(ExceptionCode.LOGIN_NOT_FOUND_ID);
-        } else if (! PasswordEncoderFactories.createDelegatingPasswordEncoder().matches(loginCompany.getPw(), findUser.get().getPw())) {
-            return new CompanyDto.DuplicateCompanyResponse(ExceptionCode.LOGIN_NOT_FOUND_PW);
         }
 
-        System.out.println(loginCompany.getId() + " : " + loginCompany.getPw());
+        Company companyUser = findUser.get();
+
+        if (!PasswordEncoderFactories.createDelegatingPasswordEncoder().matches(loginCompany.getPw(), findUser.get().getPw())) {
+            return new CompanyDto.DuplicateCompanyResponse(ExceptionCode.LOGIN_NOT_FOUND_PW);
+        }
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -100,17 +81,11 @@ public class CompanyService {
                         loginCompany.getPw()
                 )
         );
-
-        System.out.println("11113");
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         TokenDto tokenDto = createToken(authentication, companyUser.getCompanyId());
         companyUser.setToken(tokenDto.getRefreshToken());
-
-        System.out.println("11114");
         companyRepository.save(companyUser);
-
-        System.out.println("11115");
         return new CompanyDto.LoginResponse(ExceptionCode.LOGIN_OK, findUser.get(), tokenDto);
     }
 
@@ -130,13 +105,13 @@ public class CompanyService {
 //        // return ResponseEntity.ok("로그아웃 완료");
 //        return new CompanyDto.LogoutResponse(ExceptionCode.LOGOUT_OK);
 //    }
-
+    public Company findByCompanyId(Long companyId){
+        return companyRepository.findByCompanyId(companyId).orElseThrow(()->new RuntimeException("사용자를 찾을 수 없음"));
+    }
     // 프로필 조회
     public Object getCompanyInfo(Long companyId) {
         Optional<Company> optionalCompany = companyRepository.findById(companyId);
-        System.out.println("1111");
         if (optionalCompany.isEmpty()) {
-
             return new CompanyDto.CompanyInfoResponse(ExceptionCode.USER_NOT_FOUND);
         } else {
             Company company = optionalCompany.get();
@@ -148,46 +123,22 @@ public class CompanyService {
     public Object updateCompany(Long companyId, CompanyDto.UpdateCompany updateCompany, MultipartFile imageFile) {
 
         Optional<Company> findCompany = companyRepository.findByCompanyId(companyId);
-
-        System.out.println(findCompany.get().toString());
-
-        System.out.println("1111");
         if (findCompany.isEmpty()) {
             return new CompanyDto.CompanyResponse(ExceptionCode.USER_NOT_FOUND);
         }
         Company company = findCompany.get();
-
-//        Optional<Company> byId = companyRepository.findById(updateCompany.getId()); // id 중복
-//        if (byId.isPresent() && ! byId.get().getCompanyId().equals(companyId)) {
-//            return new CompanyDto.CompanyResponse(ExceptionCode.SIGNUP_DUPLICATED_ID);
-//        }
-
         company.updateCompany(updateCompany);
         //추가
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         company.setPw(encoder.encode(updateCompany.getPw()));
-        try {
-            // 파일 저장 로직
-            String uploadDir = "src/main/resources/static/upload"; // 상대 경로 사용
-            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
-            Path uploadPath = Paths.get(uploadDir);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-            Path filePath = uploadPath.resolve(fileName);
-            imageFile.transferTo(filePath);
-
-            // 저장된 이미지 파일 경로를 user 객체에 설정
-            company.setImagePath(uploadDir + "/" + fileName);
-
-            companyRepository.save(company);
-
-        } catch (IOException e) {
-            // IOException 처리 로직
-            e.printStackTrace();
-            // return new ResponseEntity<>("파일 저장 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
-            return new CompanyDto.CompanyResponse(ExceptionCode.FILE_STORAGE_ERROR);
+        if(imageFile != null && !imageFile.isEmpty()) {
+            String image = fileService.saveFile(company.getCompanyId(), imageFile, "company");
+            company.setImagePath(image);
+        }else {
+            company.setImagePath(null);
         }
+
+        companyRepository.save(company);
 
         return new CompanyDto.CompanyResponse(ExceptionCode.USER_UPDATE_OK);
     }
