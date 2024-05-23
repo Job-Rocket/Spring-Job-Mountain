@@ -17,8 +17,6 @@ public class ResumeController {
 
     private final ResumeService resumeService;
 
-    // 파일 업로드 기능은 ChunkUploadController에 있음
-
     // shorts 이력서 저장, 삭제 기능은 ShortsController에 있음
 
     // video 이력서 저장
@@ -62,6 +60,12 @@ public class ResumeController {
     @PostMapping("/all/resume/like/{resumeId}")
     public ResponseEntity<Object> addResumenumlikes(@PathVariable Long resumeId) {
         return new ResponseEntity<>(resumeService.addNumLikes(resumeId), HttpStatus.OK);
+    }
+
+    // video 이력서 Top5 불러오기
+    @GetMapping("/all/5resumes")
+    public ResponseEntity<Object> getTop5Resumes() {
+        return new ResponseEntity<>(resumeService.getTop5ResumesByNumLikes(), HttpStatus.OK);
     }
 
 }

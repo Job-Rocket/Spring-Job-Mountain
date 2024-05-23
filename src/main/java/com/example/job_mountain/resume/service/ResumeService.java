@@ -1,5 +1,6 @@
 package com.example.job_mountain.resume.service;
 
+import com.example.job_mountain.file.FileService;
 import com.example.job_mountain.job.domain.Job;
 import com.example.job_mountain.job.repository.JobRepository;
 import com.example.job_mountain.resume.domain.Resume;
@@ -13,12 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +24,7 @@ public class ResumeService {
     private final ResumeRepository resumeRepository;
     private final JobRepository jobRepository;
     private final UserRepository userRepository;
+    private final FileService fileService;
 
     // 이력서 저장
     public Object createResume(UserPrincipal userPrincipal, Long jobId, ResumeDto.CreateResume createResume, MultipartFile file) {
@@ -47,23 +43,13 @@ public class ResumeService {
                     .build();
 
             // 파일 저장 로직 추가
-            try {
-                String filename = file.getOriginalFilename();
-                String uploadDir = "video";
-
-                File dir = new File(uploadDir);
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-
-                Path filePath = Paths.get(uploadDir, filename);
-                Files.write(filePath, file.getBytes(), StandardOpenOption.CREATE);
-                resume.setFile(filePath.toString());
+            if (file != null && !file.isEmpty()) {
+                String file2 = fileService.saveFile(resume.getResumeId(), file, "resume");
+                resume.setFile(file2);
 
                 resumeRepository.save(resume);
                 return new ResumeDto.ResumeResponse(ExceptionCode.RESUME_SAVE_OK);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else {
                 return new ResumeDto.ResumeResponse(ExceptionCode.FILE_STORAGE_ERROR);
             }
 
@@ -83,8 +69,8 @@ public class ResumeService {
         if (findResume.isEmpty()) {
             return new ResumeDto.ResumeResponse(ExceptionCode.RESUME_NOT_FOUND);
         }
-
         Resume resume = findResume.get();
+
         if (!resume.getSiteUser().equals(user)) {
             return new ResumeDto.ResumeResponse(ExceptionCode.INVALID_USER);
         }
@@ -96,31 +82,13 @@ public class ResumeService {
         if (file != null && !file.isEmpty()) {
 
             // 기존 파일 삭제
-            if (findResume.get().getFile() != null && !findResume.get().getFile().isEmpty()) {
-                try {
-                    Path filePath = Paths.get(findResume.get().getFile());
-                    Files.deleteIfExists(filePath);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return new ResumeDto.ResumeResponse(ExceptionCode.FILE_DELETE_ERROR);
-                }
+            if (resume.getFile() != null && !resume.getFile().isEmpty()) {
+                fileService.deleteFile(resume.getResumeId(), resume.getFile(), "resume");
             }
 
             // 새로운 파일 저장
-            String filename = file.getOriginalFilename();
-            String uploadDir = "video";
-            File dir = new File(uploadDir);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            Path filePath = Paths.get(uploadDir, filename);
-            try {
-                Files.write(filePath, file.getBytes(), StandardOpenOption.CREATE);
-                resume.setFile(filePath.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new ResumeDto.ResumeResponse(ExceptionCode.FILE_STORAGE_ERROR);
-            }
+            String file2 = fileService.saveFile(resume.getResumeId(), file, "resume");
+            resume.setFile(file2);
         }
 
         resumeRepository.save(resume);
@@ -143,14 +111,8 @@ public class ResumeService {
         }
 
         // 파일 삭제
-        if (findResume.get().getFile() != null && !findResume.get().getFile().isEmpty()) {
-            try {
-                Path filePath = Paths.get(findResume.get().getFile());
-                Files.deleteIfExists(filePath);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new ResumeDto.ResumeResponse(ExceptionCode.FILE_DELETE_ERROR);
-            }
+        if (resume.getFile() != null && !resume.getFile().isEmpty()) {
+            fileService.deleteFile(resume.getResumeId(), resume.getFile(), "resume");
         }
 
         resumeRepository.delete(resume);
@@ -190,12 +152,17 @@ public class ResumeService {
         Optional<Resume> optionalResume = resumeRepository.findById(id);
         if (optionalResume.isPresent()) {
             Resume resume = optionalResume.get();
-            resume.setNum_likes(resume.getNum_likes() + 1);
+            resume.setNumLikes(resume.getNumLikes() + 1);
             this.resumeRepository.save(resume);
             return new ResumeDto.ResumeResponse(ExceptionCode.RESUME_NUMLIKES_OK);
         } else {
             return new ResumeDto.ResumeResponse(ExceptionCode.RESUME_NOT_FOUND);
         }
+    }
+    // 좋아요기준 Top5 Resume
+    public Object getTop5ResumesByNumLikes(){
+        List<Resume> Top5Resumes = resumeRepository.findTop5ByOrderByNumLikesDesc();
+        return new ResumeDto.ResumeListResponse(ExceptionCode.RESUME_GET_OK, Top5Resumes);
     }
 
 }

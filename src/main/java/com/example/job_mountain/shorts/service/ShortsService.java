@@ -1,5 +1,6 @@
 package com.example.job_mountain.shorts.service;
 
+import com.example.job_mountain.file.FileService;
 import com.example.job_mountain.job.domain.Job;
 import com.example.job_mountain.job.repository.JobRepository;
 import com.example.job_mountain.security.UserPrincipal;
@@ -13,12 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +24,7 @@ public class ShortsService {
     private final ShortsRepository shortsRepository;
     private final JobRepository jobRepository;
     private final UserRepository userRepository;
+    private final FileService fileService;
 
     // 이력서 저장
     public Object createShorts(UserPrincipal userPrincipal, Long jobId, ShortsDto.CreateShorts createShorts, MultipartFile file) {
@@ -47,23 +43,13 @@ public class ShortsService {
                     .build();
 
             // 파일 저장 로직 추가
-            try {
-                String filename = file.getOriginalFilename();
-                String uploadDir = "video";
-
-                File dir = new File(uploadDir);
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-
-                Path filePath = Paths.get(uploadDir, filename);
-                Files.write(filePath, file.getBytes(), StandardOpenOption.CREATE);
-                shorts.setFile(filePath.toString());
+            if (file != null && !file.isEmpty()) {
+                String file2 = fileService.saveFile(shorts.getShortsId(), file, "shorts");
+                shorts.setFile(file2);
 
                 shortsRepository.save(shorts);
                 return new ShortsDto.ShortsResponse(ExceptionCode.RESUME_SAVE_OK);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else {
                 return new ShortsDto.ShortsResponse(ExceptionCode.FILE_STORAGE_ERROR);
             }
 
@@ -83,8 +69,8 @@ public class ShortsService {
         if (findShorts.isEmpty()) {
             return new ShortsDto.ShortsResponse(ExceptionCode.RESUME_NOT_FOUND);
         }
-
         Shorts shorts = findShorts.get();
+
         if (!shorts.getSiteUser().equals(user)) {
             return new ShortsDto.ShortsResponse(ExceptionCode.INVALID_USER);
         }
@@ -96,31 +82,13 @@ public class ShortsService {
         if (file != null && !file.isEmpty()) {
 
             // 기존 파일 삭제
-            if (findShorts.get().getFile() != null && !findShorts.get().getFile().isEmpty()) {
-                try {
-                    Path filePath = Paths.get(findShorts.get().getFile());
-                    Files.deleteIfExists(filePath);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return new ShortsDto.ShortsResponse(ExceptionCode.FILE_DELETE_ERROR);
-                }
+            if (shorts.getFile() != null && !shorts.getFile().isEmpty()) {
+                fileService.deleteFile(shorts.getShortsId(), shorts.getFile(), "shorts");
             }
 
             // 새로운 파일 저장
-            String filename = file.getOriginalFilename();
-            String uploadDir = "video";
-            File dir = new File(uploadDir);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            Path filePath = Paths.get(uploadDir, filename);
-            try {
-                Files.write(filePath, file.getBytes(), StandardOpenOption.CREATE);
-                shorts.setFile(filePath.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new ShortsDto.ShortsResponse(ExceptionCode.FILE_STORAGE_ERROR);
-            }
+            String file2 = fileService.saveFile(shorts.getShortsId(), file, "shorts");
+            shorts.setFile(file2);
         }
 
         shortsRepository.save(shorts);
@@ -143,14 +111,8 @@ public class ShortsService {
         }
 
         // 파일 삭제
-        if (findShorts.get().getFile() != null && !findShorts.get().getFile().isEmpty()) {
-            try {
-                Path filePath = Paths.get(findShorts.get().getFile());
-                Files.deleteIfExists(filePath);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return new ShortsDto.ShortsResponse(ExceptionCode.FILE_DELETE_ERROR);
-            }
+        if (shorts.getFile() != null && !shorts.getFile().isEmpty()) {
+            fileService.deleteFile(shorts.getShortsId(), shorts.getFile(), "shorts");
         }
 
         shortsRepository.delete(shorts);
@@ -190,12 +152,18 @@ public class ShortsService {
         Optional<Shorts> optionalShorts = shortsRepository.findById(id);
         if (optionalShorts.isPresent()) {
             Shorts shorts = optionalShorts.get();
-            shorts.setNum_likes(shorts.getNum_likes() + 1);
+            shorts.setNumLikes(shorts.getNumLikes() + 1);
             this.shortsRepository.save(shorts);
             return new ShortsDto.ShortsResponse(ExceptionCode.RESUME_NUMLIKES_OK);
         } else {
             return new ShortsDto.ShortsResponse(ExceptionCode.RESUME_NOT_FOUND);
         }
+    }
+
+    // 좋아요기준 Top5 Shorts
+    public Object getTop5ShortsByNumLikes(){
+        List<Shorts> Top5Shorts = shortsRepository.findTop5ByOrderByNumLikesDesc();
+        return new ShortsDto.ShortsListResponse(ExceptionCode.RESUME_GET_OK, Top5Shorts);
     }
 
 }

@@ -45,7 +45,7 @@ public class Shorts extends BaseEntity {
     private String title;// 이력서 제목
     private String file; // 비디오 파일
     private int view;// 조회수
-    private int num_likes;// 좋아요
+    private int numLikes;// 좋아요
 
     // 추가
     @Builder
@@ -58,7 +58,7 @@ public class Shorts extends BaseEntity {
         this.title = createShorts.getTitle();
         this.file = createShorts.getFile();
         this.view = 0;
-        this.num_likes = 0;
+        this.numLikes = 0;
     }
     public void updateShorts(ShortsDto.CreateShorts createShorts) {
         this.title = createShorts.getTitle();
