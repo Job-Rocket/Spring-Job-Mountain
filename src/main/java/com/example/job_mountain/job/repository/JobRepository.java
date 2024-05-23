@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface JobRepository extends JpaRepository<Job, Long> {
     List<Job> findAllByOrderByCreatedAtDesc();
     Optional<Job> findByJobId(Long jobId);
+    List<Job> findTop6ByOrderByViewDesc();
 }

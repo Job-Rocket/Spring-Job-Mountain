@@ -1,11 +1,14 @@
 package com.example.job_mountain.job.controller;
 
+import com.example.job_mountain.job.domain.Job;
 import com.example.job_mountain.job.dto.JobDto;
 import com.example.job_mountain.job.service.JobService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping
@@ -46,6 +49,13 @@ public class JobController {
     @GetMapping("/all/job/{jobId}")
     public ResponseEntity<Object> getJob(@PathVariable Long jobId) {
         return new ResponseEntity<>(jobService.getView(jobId), HttpStatus.OK);
+    }
+
+    // 메인화면-top6 채용공고
+    @GetMapping("/all/job/topviews")
+    public ResponseEntity<List<Job>> getTop6JobsByView(){
+        List<Job> topJobs = jobService.getTop6JobsByViews();
+        return ResponseEntity.ok(topJobs);
     }
 
 }
