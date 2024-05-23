@@ -23,6 +23,7 @@ app:
   auth:
     tokenSecret: ${app.auth.token.secret}
     tokenExpirationDay: 30
+  firebase-bucket: ${app.auth.firebase-bucket}
 logging:
   level:
     org.springframework.security: DEBUG
