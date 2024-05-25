@@ -126,6 +126,7 @@ jobs:
           cp -r .ebextensions deploy/.ebextensions
           cp -r .platform deploy/.platform
           echo "${{secrets.FIREBASE_SERVICE_ACCOUNT}}" > src/main/resources/jobdongsani-bfeeb-firebase-adminsdk-wsen9-e1808536bb.json
+          cat src/main/resources/jobdongsani-bfeeb-firebase-adminsdk-wsen9-e1808536bb.json
           cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy

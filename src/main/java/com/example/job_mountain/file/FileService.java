@@ -16,7 +16,7 @@ import java.io.InputStream;
 @RequiredArgsConstructor
 public class FileService {
 
-    @Value("${app.auth.firebase-bucket}")
+    @Value("${app.firebase-bucket}")
     private String firebaseBucket;
 
     private static final String downPath_front = "https://firebasestorage.googleapis.com/v0/b/jobdongsani-bfeeb.appspot.com/o/";
