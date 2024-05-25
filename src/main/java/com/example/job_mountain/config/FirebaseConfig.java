@@ -54,6 +54,10 @@ public class FirebaseConfig {
             throw new IllegalStateException("FIREBASE_SERVICE_ACCOUNT environment variable is not set.");
         }
 
+        // 환경 변수 값을 출력해 봅니다.
+        System.out.println("FIREBASE_SERVICE_ACCOUNT: " + firebaseConfig);
+
+
         // 환경 변수에서 읽어온 내용을 InputStream으로 변환합니다.
         ByteArrayInputStream serviceAccountStream = new ByteArrayInputStream(firebaseConfig.getBytes(StandardCharsets.UTF_8));
 
