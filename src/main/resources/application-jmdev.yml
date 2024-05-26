@@ -23,7 +23,7 @@ app:
   auth:
     tokenSecret: ${app.auth.token.secret}
     tokenExpirationDay: 30
-  firebase-bucket: ${app.firebase-bucket}
+  firebase-bucket: jobdongsani-bfeeb.appspot.com
 logging:
   level:
     org.springframework.security: DEBUG
