@@ -105,7 +105,9 @@ jobs:
 
       - name: Firebase Initialize
         run: |
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" | jq '.' > $GITHUB_WORKSPACE/src/main/resources/jobdongsani-bfeeb-firebase-adminsdk-wsen9-e1808536bb.json
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > src/main/resources/temp_firebase.json
+          tr -d '\r' < src/main/resources/temp_firebase.json > src/main/resources/jobdongsani-bfeeb-firebase-adminsdk-wsen9-e1808536bb.json
+          rm src/main/resources/temp_firebase.json
 
       - name: Build with Gradle
         run: ./gradlew clean bootjar -Pprofile=prod
@@ -130,21 +132,3 @@ jobs:
           cp -r .ebextensions deploy/.ebextensions
           cp -r .platform deploy/.platform
           cd deploy && zip -r deploy.zip .
-
-      - name: Beanstalk Deploy
-        uses: einaregilsson/beanstalk-deploy@v22
-        with:
-          aws_access_key: ${{secrets.AWS_ACCESS_KEY}}
-          aws_secret_key: ${{secrets.AWS_SECRET_KEY}}
-          application_name: Job-Mountain
-          environment_name: Job-Mountain-env-1
-          version_label: github-action-${{steps.current-time.outputs.formattedTime}}
-          region: ap-northeast-2
-          deployment_package: deploy/deploy.zip
-          wait_for_environment_recovery: 300
-
-      - name: Cleanup Gradle Cache
-        if: ${{ always() }}
-        run: |
-          rm -f ~/.gradle/caches/modules-2/modules-2.lock
-          rm -f ~/.gradle/caches/modules-2/gc.properties
