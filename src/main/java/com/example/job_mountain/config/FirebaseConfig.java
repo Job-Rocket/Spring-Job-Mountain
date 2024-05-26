@@ -25,7 +25,7 @@ public class FirebaseConfig {
         // BufferedReader를 사용하여 JSON 파일의 내용을 문자열로 읽습니다.
         String jsonString;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(serviceAccountFile.getInputStream()))) {
-            jsonString = reader.lines().collect(Collectors.joining());
+            jsonString = reader.lines().collect(Collectors.joining(System.lineSeparator()));
         }
 
         // Gson을 사용하여 JSON 문자열을 파싱합니다.
