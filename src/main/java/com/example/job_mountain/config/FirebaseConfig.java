@@ -34,6 +34,12 @@ public class FirebaseConfig {
         // Gson을 사용하여 JSON 문자열을 파싱합니다.
         JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
 
+        // JSON 객체에서 모든 키를 출력하여 확인
+        System.out.println("Parsed JSON keys:");
+        for (String key : jsonObject.keySet()) {
+            System.out.println(key + ": " + jsonObject.get(key));
+        }
+
         // JSON 객체에서 필요한 키가 존재하는지 확인
         if (!jsonObject.has("project_id") || !jsonObject.has("database_url")) {
             throw new IllegalArgumentException("Invalid Firebase configuration: missing required keys");
@@ -43,7 +49,6 @@ public class FirebaseConfig {
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(new ByteArrayInputStream(jsonString.getBytes(StandardCharsets.UTF_8))))
                 .setProjectId(jsonObject.get("project_id").getAsString())
-                .setDatabaseUrl(jsonObject.get("database_url").getAsString())
                 .build();
 
         // FirebaseApp을 초기화하고 반환합니다.
