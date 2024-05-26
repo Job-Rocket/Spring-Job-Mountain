@@ -104,7 +104,7 @@ jobs:
         shell: bash
 
       - name: Firebase Initialize
-        run:  cat "${{secrets.FIREBASE_SERVICE_ACCOUNT}}" > src/main/resources/jobdongsani-bfeeb-firebase-adminsdk-wsen9-e1808536bb.json
+        run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > src/main/resources/firebase-service-account.json
 
       - name: Build with Gradle
         run: ./gradlew clean bootjar -Pprofile=prod
@@ -118,7 +118,7 @@ jobs:
           utcOffset: "+09:00"
 
       - name: Show Current Time
-        run: echo "CurrentTime=${{steps.current-time.outputs.formattedTime}}"
+        run: echo "CurrentTime=${{ steps.current-time.outputs.formattedTime }}"
         shell: bash
 
       - name: Generate deployment package
