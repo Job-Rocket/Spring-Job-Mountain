@@ -104,7 +104,7 @@ jobs:
         shell: bash
 
       - name: Firebase Initialize
-        run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > src/main/resources/firebase-service-account.json
+        run: echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > $GITHUB_WORKSPACE/src/main/resources/jobdongsani-bfeeb-firebase-adminsdk-wsen9-e1808536bb.json
 
       - name: Build with Gradle
         run: ./gradlew clean bootjar -Pprofile=prod
