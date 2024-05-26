@@ -21,6 +21,7 @@ public class FirebaseConfig {
     public FirebaseApp firebaseApp() throws IOException {
         // Firebase 설정 파일을 클래스패스에서 읽습니다.
         ClassPathResource serviceAccountFile = new ClassPathResource("jobdongsani-bfeeb-firebase-adminsdk-wsen9-e1808536bb.json");
+
         // BufferedReader를 사용하여 JSON 파일의 내용을 문자열로 읽습니다.
         String jsonString;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(serviceAccountFile.getInputStream()))) {
