@@ -103,6 +103,9 @@ jobs:
         run: chmod +x ./gradlew
         shell: bash
 
+      - name: Firebase Initialize
+        run:  cat "${{secrets.FIREBASE_SERVICE_ACCOUNT}}" > src/main/resources/jobdongsani-bfeeb-firebase-adminsdk-wsen9-e1808536bb.json
+
       - name: Build with Gradle
         run: ./gradlew clean bootjar -Pprofile=prod
         shell: bash
@@ -125,7 +128,6 @@ jobs:
           cp Procfile deploy/Procfile
           cp -r .ebextensions deploy/.ebextensions
           cp -r .platform deploy/.platform
-          echo cat "${{secrets.FIREBASE_SERVICE_ACCOUNT}}" > src/main/resources/jobdongsani-bfeeb-firebase-adminsdk-wsen9-e1808536bb.json
           cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
