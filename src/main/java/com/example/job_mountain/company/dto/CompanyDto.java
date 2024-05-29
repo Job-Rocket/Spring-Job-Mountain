@@ -24,6 +24,7 @@ public class CompanyDto {
         Integer employees;
         String companyLocation;
         List<String> stack;
+        List<String> env;
     }
 
     @Getter
@@ -108,6 +109,7 @@ public class CompanyDto {
         Integer employees;
         String companyLocation;
         List<String> stack;
+        List<String> env;
 
         public CompanyInfoResponse(ExceptionCode exceptionCode) {
             super(exceptionCode);
@@ -125,6 +127,7 @@ public class CompanyDto {
             this.employees = company.getEmployees();
             this.companyLocation = company.getCompanyLocation();
             this.stack = company.getStack();
+            this.env = company.getEnv();
         }
     }
     // 정보 수정
@@ -140,6 +143,7 @@ public class CompanyDto {
         Integer employees;
         String companyLocation;
         List<String> stack;
+        List<String> env;
     }
 
 }
