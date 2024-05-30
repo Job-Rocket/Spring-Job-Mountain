@@ -55,6 +55,9 @@ public class SiteUser {
     @Column(length = 400)
     private String token;
 
+    @Column(nullable = false)
+    private Boolean flag; // True(1) 이면 취준생, False(0) 이면 현직자로 구분
+
     // 취준생과 이력서 간의 일대다 관계
     @JsonIgnore
     @OneToMany(mappedBy = "siteUser", cascade = CascadeType.ALL)
@@ -87,6 +90,7 @@ public class SiteUser {
         this.interest = signupUser.getInterest();
         //this.image = signupUser.getImage();
         this.imagePath = signupUser.getImagePath();
+        this.flag = signupUser.getFlag();
     }
 
     public void setToken(String token) {

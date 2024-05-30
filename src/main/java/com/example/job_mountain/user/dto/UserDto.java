@@ -22,6 +22,7 @@ public class UserDto {
         Integer age;
         String imagePath; // 추가
         List<String> interest;
+        Boolean flag; // 추가
 //        String image;
     }
 
@@ -77,12 +78,14 @@ public class UserDto {
     public static class LoginResponse extends ResponseType {
         Long userId;
         String userName;
+        Boolean flag;
         TokenDto tokenDto;
 
         public LoginResponse(ExceptionCode exceptionCode, SiteUser user, TokenDto tokenDto) {
             super(exceptionCode);
             this.userId = user.getUserId();
             this.userName = user.getUserName();
+            this.flag = user.getFlag();
             this.tokenDto = tokenDto;
         }
     }
@@ -113,6 +116,7 @@ public class UserDto {
         String imagePath;
         Integer age;
         List<String> interest;
+        Boolean flag;
 
         public UserInfoResponse(ExceptionCode exceptionCode) {
             super(exceptionCode);
@@ -129,6 +133,7 @@ public class UserDto {
                 this.imagePath = user.getImagePath();
                 this.age = user.getAge();
                 this.interest = user.getInterest();
+                this.flag = user.getFlag();
             }
         }
     }
