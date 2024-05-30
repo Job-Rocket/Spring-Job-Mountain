@@ -112,7 +112,8 @@ public class JobService {
     }
 
     // 조회수기준 Top6채용공고
-    public List<Job> getTop6JobsByViews(){
-        return jobRepository.findTop6ByOrderByViewDesc();
+    public Object getTop6JobsByViews(){
+        List<Job> Top6Jobs = jobRepository.findTop6ByOrderByViewDesc();
+        return new JobDto.JobListResponse(ExceptionCode.JOB_GET_OK, Top6Jobs);
     }
 }
