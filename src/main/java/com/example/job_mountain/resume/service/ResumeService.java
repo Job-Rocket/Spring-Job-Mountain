@@ -159,10 +159,10 @@ public class ResumeService {
             return new ResumeDto.ResumeResponse(ExceptionCode.RESUME_NOT_FOUND);
         }
     }
-    // 좋아요기준 Top5 Resume
-    public Object getTop5ResumesByNumLikes(){
-        List<Resume> Top5Resumes = resumeRepository.findTop5ByOrderByNumLikesDesc();
-        return new ResumeDto.ResumeListResponse(ExceptionCode.RESUME_GET_OK, Top5Resumes);
+    // 좋아요기준 Top6 Resume
+    public Object getTop6ResumesByNumLikes(){
+        List<Resume> Top6Resumes = resumeRepository.findTop6ByOrderByNumLikesDesc();
+        return new ResumeDto.ResumeListResponse(ExceptionCode.RESUME_GET_OK, Top6Resumes);
     }
 
 }

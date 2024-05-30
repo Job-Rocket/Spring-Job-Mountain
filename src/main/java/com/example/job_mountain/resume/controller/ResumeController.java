@@ -63,9 +63,9 @@ public class ResumeController {
     }
 
     // video 이력서 Top5 불러오기
-    @GetMapping("/all/5resumes")
-    public ResponseEntity<Object> getTop5Resumes() {
-        return new ResponseEntity<>(resumeService.getTop5ResumesByNumLikes(), HttpStatus.OK);
+    @GetMapping("/all/6resumes")
+    public ResponseEntity<Object> getTop6Resumes() {
+        return new ResponseEntity<>(resumeService.getTop6ResumesByNumLikes(), HttpStatus.OK);
     }
 
 }
