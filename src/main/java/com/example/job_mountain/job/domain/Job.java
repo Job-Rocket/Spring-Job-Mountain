@@ -37,13 +37,28 @@ public class Job extends BaseEntity {
     private String companyName;// 회사이름
 
     @Column(name = "company_location")
-    private String companyLocation;//회사위치
+    private String companyLocation;// 회사위치
+
+    @Column(name = "company_employees")
+    private Integer companyEmployees;// 회사직원수
+
+    @Column(name = "company_stack")
+    private List<String> companyStack;// 회사기술스택
 
     private String title;// 공고 제목
     private LocalDate deadline;//마감기한
     private String content;//공고 내용
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<String> env; // 사용 환경
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<String> worktype; // 근무형태
+
+    private Integer salary; // 해당채용공고의 연봉
+
     private int view;//조회수
-    // private String RegistNum; //등록일자
+
 
     // 이력서(resume) 테이블과 일대다매핑
     @JsonIgnore
@@ -63,15 +78,23 @@ public class Job extends BaseEntity {
         this.companyImage = company.getImagePath();
         this.companyName = company.getCompanyName();
         this.companyLocation = company.getCompanyLocation();
+        this.companyEmployees = company.getEmployees();
+        this.companyStack = company.getStack();
         this.title = createJob.getTitle();
         this.deadline = createJob.getDeadline();
         this.content = createJob.getContent();
+        this.env = createJob.getEnv();
+        this.worktype = createJob.getWorktype();
+        this.salary = createJob.getSalary();
         this.view = 0;
     }
     public void updateJob(JobDto.CreateJob createJob) {
         this.title = createJob.getTitle();
         this.deadline = createJob.getDeadline();
         this.content = createJob.getContent();
+        this.env = createJob.getEnv();
+        this.worktype = createJob.getWorktype();
+        this.salary = createJob.getSalary();
         this.view = createJob.getView();
     }
 }

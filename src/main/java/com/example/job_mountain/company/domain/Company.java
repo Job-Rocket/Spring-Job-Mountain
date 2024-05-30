@@ -50,9 +50,6 @@ public class Company {
     @ElementCollection(fetch = FetchType.LAZY)
     private List<String> stack; // 기술 스택
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    private List<String> env; // 사용 환경
-
     @Column(length = 400)
     private String token;
 
@@ -72,7 +69,6 @@ public class Company {
         this.employees = signupCompany.getEmployees();
         this.companyLocation = signupCompany.getCompanyLocation();
         this.stack = signupCompany.getStack();
-        this.env = signupCompany.getEnv();
     }
     public void setToken(String token) {
         this.token = token;
@@ -88,7 +84,6 @@ public class Company {
         this.employees = updateCompany.getEmployees();
         this.companyLocation = updateCompany.getCompanyLocation();
         this.stack = updateCompany.getStack();
-        this.env = updateCompany.getEnv();
     }
 
     @Override
@@ -101,7 +96,6 @@ public class Company {
                 ", companyNo='" + companyNo + '\'' +
                 ", imagePath='" + imagePath + '\'' +
                 ", stack=" + stack +
-                ", env=" + env +
                 ", averageSalary=" + averageSalary +
                 ", employees=" + employees +
                 ", companyLocation='" + companyLocation + '\'' +

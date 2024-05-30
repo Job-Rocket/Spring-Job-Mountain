@@ -21,6 +21,9 @@ public class JobDto {
         private String title;
         private LocalDate deadline;
         private String content;
+        private List<String> env;
+        private List<String> worktype;
+        private Integer salary;
         private int view;
     }
 
