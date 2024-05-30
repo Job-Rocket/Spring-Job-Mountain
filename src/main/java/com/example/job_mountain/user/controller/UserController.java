@@ -40,7 +40,7 @@ public class UserController {
 //    }
 
     // 로그인 후, 회원 정보 조회
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user")
     public ResponseEntity<Object> getUserInfo(@PathVariable Long userId) {
         Object response = userService.getUserInfo(userId);
 
@@ -57,7 +57,7 @@ public class UserController {
     }
 
     // 로그인 후, 프로필 수정
-    @PatchMapping("/user/{userId}")
+    @PatchMapping("/user")
     public ResponseEntity<Object> fixUserInfo(@CurrentUser UserPrincipal userPrincipal,
                                               @RequestPart("updateUser") UserDto.UpdateUser updateUser,
                                               @RequestPart("imageFile") MultipartFile imageFile) {
