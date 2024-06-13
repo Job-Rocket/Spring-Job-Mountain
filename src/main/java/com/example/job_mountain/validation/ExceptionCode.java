@@ -47,6 +47,10 @@ public enum ExceptionCode {
     JOB_DELETE_OK(SUCCESS, "J005", "JOB 삭제 성공"),
     JOB_GET_OK(SUCCESS, "J006", "JOB 불러오기 성공"),
 
+    //마감기한 지난 채용공고
+    EXPIREDJOB_GET_OK(SUCCESS,"E000","EXPIRED JOB 불러오기 성공"),
+    EXPIREDJOB_GET_FAIL(NOT_FOUND_VALUE,"E001","해당 EXPIRED JOB 없음"),
+
     // resume 정보
     RESUME_SAVE_OK(SUCCESS, "R000", "RESUME(또는 SHORTS) 저장 성공"),
     RESUME_SAVE_FAIL1(NOT_FOUND_VALUE, "R001", "RESUME(또는 SHORTS) 제목 없음"),

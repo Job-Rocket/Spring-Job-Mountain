@@ -1,14 +1,19 @@
 package com.example.job_mountain.job.service;
 
+import com.example.job_mountain.ExpiredJob.domain.ExpiredJob;
+import com.example.job_mountain.ExpiredJob.repository.ExpiredJobRepository;
 import com.example.job_mountain.company.domain.Company;
 import com.example.job_mountain.company.repository.CompanyRepository;
 import com.example.job_mountain.job.domain.Job;
 import com.example.job_mountain.job.dto.JobDto;
 import com.example.job_mountain.job.repository.JobRepository;
 import com.example.job_mountain.validation.ExceptionCode;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,11 +23,10 @@ public class JobService {
 
     private final JobRepository jobRepository;
     private final CompanyRepository companyRepository;
-
+    private final ExpiredJobRepository expiredJobRepository;
     // 채용공고 저장
     public Object createPost(Long companyId, JobDto.CreateJob createJob) {
         Company company = companyRepository.findByCompanyId(companyId).get();
-        System.out.println("j01");
 
         // 제목, 설명 둘다 있어야 채용공고를 저장함
         if (!createJob.getTitle().isEmpty() && !createJob.getContent().isEmpty()) {
@@ -112,8 +116,21 @@ public class JobService {
     }
 
     // 조회수기준 Top6채용공고
-    public Object getTop6JobsByViews(){
-        List<Job> Top6Jobs = jobRepository.findTop6ByOrderByViewDesc();
-        return new JobDto.JobListResponse(ExceptionCode.JOB_GET_OK, Top6Jobs);
+    public List<Job> getTop6JobsByViews(){
+        return jobRepository.findTop6ByOrderByViewDesc();
     }
+    @Transactional
+    // 매일 자정에 실행되도록 스케줄링 설정
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void moveExpiredJobs() {
+        LocalDate today = LocalDate.now();
+        List<Job> expiredJobs = jobRepository.findByDeadlineBefore(today);
+
+        for (Job expiredJob : expiredJobs) {
+            ExpiredJob newExpiredJob = new ExpiredJob(expiredJob);
+            expiredJobRepository.save(newExpiredJob);
+            jobRepository.delete(expiredJob);
+        }
+    }
+
 }
