@@ -64,11 +64,11 @@ public enum ExceptionCode {
     // post 정보
     POST_SAVE_OK(SUCCESS, "P000", "POST 저장 성공"),
     POST_SAVE_FAIL(NOT_FOUND_VALUE, "P001", "POST 제목 또는 내용 없음"),
-    POST_UPDATE_OK(SUCCESS, "P003", "POST 수정 성공"),
-    POST_DELETE_OK(SUCCESS, "P004", "POST 삭제 성공"),
-    POST_NOT_FOUND(NOT_FOUND_VALUE, "P005", "POST 정보 없음"),
-    POST_GET_OK(SUCCESS, "P006", "POST 불러오기 성공"),
-    POST_NUMLIKES_OK(SUCCESS, "P007", "POST 좋아요 증가 성공"),
+    POST_UPDATE_OK(SUCCESS, "P002", "POST 수정 성공"),
+    POST_DELETE_OK(SUCCESS, "P003", "POST 삭제 성공"),
+    POST_NOT_FOUND(NOT_FOUND_VALUE, "P004", "POST 정보 없음"),
+    POST_GET_OK(SUCCESS, "P005", "POST 불러오기 성공"),
+    POST_NUMLIKES_OK(SUCCESS, "P006", "POST 좋아요 증가 성공"),
 
     /**
      * 잘못된 ExceptionCode
