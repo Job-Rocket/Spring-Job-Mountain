@@ -32,7 +32,7 @@ public class PostService {
                     .createPost(createPost)
                     .user(user)
                     .build();
-
+            postRepository.save(post);
             return new PostDto.PostResponse(ExceptionCode.POST_SAVE_OK);
 
         } else { // 제목 또는 내용이 없을 때 반환하는 로직
