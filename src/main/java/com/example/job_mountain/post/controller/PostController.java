@@ -56,7 +56,7 @@ public class PostController {
         return new ResponseEntity<>(postService.addNumLikes(postId), HttpStatus.OK);
     }
 
-    // video 이력서 Top6 불러오기
+    // post Top6 불러오기
     @GetMapping("/all/6posts")
     public ResponseEntity<Object> getTop6Posts() {
         return new ResponseEntity<>(postService.getTop6PostsByNumLikes(), HttpStatus.OK);
