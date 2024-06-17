@@ -70,6 +70,15 @@ public enum ExceptionCode {
     POST_GET_OK(SUCCESS, "P005", "POST 불러오기 성공"),
     POST_NUMLIKES_OK(SUCCESS, "P006", "POST 좋아요 증가 성공"),
 
+    // comment 정보
+    COMMENT_SAVE_OK(SUCCESS, "C000", "COMMENT 저장 성공"),
+    COMMENT_SAVE_FAIL(NOT_FOUND_VALUE, "C001", "COMMENT 내용 없음"),
+    COMMENT_UPDATE_OK(SUCCESS, "C002", "COMMENT 수정 성공"),
+    COMMENT_DELETE_OK(SUCCESS, "C003", "COMMENT 삭제 성공"),
+    COMMENT_NOT_FOUND(NOT_FOUND_VALUE, "C004", "COMMENT 정보 없음"),
+    COMMENT_GET_OK(SUCCESS, "C005", "COMMENT 불러오기 성공"),
+    COMMENT_NUMLIKES_OK(SUCCESS, "C006", "COMMENT 좋아요 증가 성공"),
+
     /**
      * 잘못된 ExceptionCode
      */

@@ -59,7 +59,7 @@ public class PostService {
             postRepository.save(post);
             return new PostDto.PostResponse(ExceptionCode.POST_UPDATE_OK);
         } else {
-            return new PostDto.PostResponse(ExceptionCode.FILE_NOT_FOUND);
+            return new PostDto.PostResponse(ExceptionCode.POST_SAVE_FAIL);
         }
     }
 
