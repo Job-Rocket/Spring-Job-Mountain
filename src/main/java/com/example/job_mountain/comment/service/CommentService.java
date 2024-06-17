@@ -38,14 +38,17 @@ public class CommentService {
             Comment comment = Comment.builder()
                     .createComment(createComment)
                     .user(user)
+                    .post(findPost.get()) // Post 객체를 추가
                     .build();
             commentRepository.save(comment);
+            commentRepository.flush(); // flush() 호출
             List<Comment> comments = commentRepository.findByPost_PostIdOrderByCreatedAtDesc(postId);
             return new CommentDto.CommentListResponse(ExceptionCode.COMMENT_SAVE_OK, comments);
         } else { // 내용이 없을 때 반환하는 로직
             return new CommentDto.CommentResponse(ExceptionCode.COMMENT_SAVE_FAIL);
         }
     }
+
 
     // 취준생/현직자 댓글 수정
     public Object updateComment(UserPrincipal userPrincipal, Long postId, Long commentId, CommentDto.CreateComment createComment) {
@@ -70,6 +73,7 @@ public class CommentService {
         if (!createComment.getContent().isEmpty()) {
             comment.updateComment(createComment);
             commentRepository.save(comment);
+            commentRepository.flush(); // flush() 호출
             List<Comment> comments = commentRepository.findByPost_PostIdOrderByCreatedAtDesc(postId);
             return new CommentDto.CommentListResponse(ExceptionCode.COMMENT_UPDATE_OK, comments);
         } else {
@@ -96,6 +100,7 @@ public class CommentService {
             return new CommentDto.CommentResponse(ExceptionCode.INVALID_USER);
         }
         commentRepository.delete(comment);
+        commentRepository.flush(); // flush() 호출
         List<Comment> comments = commentRepository.findByPost_PostIdOrderByCreatedAtDesc(postId);
         return new CommentDto.CommentListResponse(ExceptionCode.COMMENT_DELETE_OK, comments);
     }
