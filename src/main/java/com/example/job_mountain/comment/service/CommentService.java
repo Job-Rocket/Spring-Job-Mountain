@@ -35,8 +35,10 @@ public class CommentService {
 
         // 내용이 있어야 댓글 저장 가능
         if (!createComment.getContent().isEmpty()) {
+            Post post = findPost.get();
             Comment comment = Comment.builder()
                     .createComment(createComment)
+                    .post(post)
                     .user(user)
                     .build();
             commentRepository.save(comment);
