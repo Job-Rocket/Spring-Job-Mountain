@@ -38,7 +38,6 @@ public class CommentService {
             Comment comment = Comment.builder()
                     .createComment(createComment)
                     .user(user)
-                    .post(findPost.get()) // Post 객체를 추가
                     .build();
             commentRepository.save(comment);
             commentRepository.flush(); // flush() 호출
