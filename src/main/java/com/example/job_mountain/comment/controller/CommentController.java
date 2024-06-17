@@ -20,7 +20,8 @@ public class CommentController {
     public ResponseEntity<Object> createComment(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                 @PathVariable Long postId,
                                                 @RequestBody CommentDto.CreateComment createComment) {
-        return new ResponseEntity<>(commentService.createComment(userPrincipal, postId, createComment), HttpStatus.OK);
+        commentService.createComment(userPrincipal, postId, createComment);
+        return new ResponseEntity<>(commentService.findCommentsByPostId(postId), HttpStatus.OK);
     }
 
     // 댓글 수정하기 및 댓글 전체 불러오기
@@ -29,7 +30,8 @@ public class CommentController {
                                                 @PathVariable Long postId,
                                                 @PathVariable Long commentId,
                                                 @RequestBody CommentDto.CreateComment updateComment) {
-        return new ResponseEntity<>(commentService.updateComment(userPrincipal, postId, commentId, updateComment), HttpStatus.OK);
+        commentService.updateComment(userPrincipal, postId, commentId, updateComment);
+        return new ResponseEntity<>(commentService.findCommentsByPostId(postId), HttpStatus.OK);
     }
 
     // 댓글 삭제하기 및 댓글 전체 불러오기
@@ -37,7 +39,8 @@ public class CommentController {
     public ResponseEntity<Object> deleteComment(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                 @PathVariable Long postId,
                                                 @PathVariable Long commentId) {
-        return new ResponseEntity<>(commentService.deleteComment(userPrincipal, postId, commentId), HttpStatus.OK);
+        commentService.deleteComment(userPrincipal, postId, commentId);
+        return new ResponseEntity<>(commentService.findCommentsByPostId(postId), HttpStatus.OK);
     }
 
     // 특정 게시물 댓글 불러오기
