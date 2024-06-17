@@ -41,7 +41,7 @@ public class CommentService {
                     .build();
             commentRepository.save(comment);
             commentRepository.flush(); // flush() 호출
-            List<Comment> comments = commentRepository.findByPost_PostIdOrderByCreatedAtDesc(postId);
+            List<Comment> comments = commentRepository.findAllByPostPostId(postId);
             return new CommentDto.CommentListResponse(ExceptionCode.COMMENT_SAVE_OK, comments);
         } else { // 내용이 없을 때 반환하는 로직
             return new CommentDto.CommentResponse(ExceptionCode.COMMENT_SAVE_FAIL);
@@ -73,7 +73,7 @@ public class CommentService {
             comment.updateComment(createComment);
             commentRepository.save(comment);
             commentRepository.flush(); // flush() 호출
-            List<Comment> comments = commentRepository.findByPost_PostIdOrderByCreatedAtDesc(postId);
+            List<Comment> comments = commentRepository.findAllByPostPostId(postId);
             return new CommentDto.CommentListResponse(ExceptionCode.COMMENT_UPDATE_OK, comments);
         } else {
             return new CommentDto.CommentResponse(ExceptionCode.COMMENT_SAVE_FAIL);
@@ -100,7 +100,7 @@ public class CommentService {
         }
         commentRepository.delete(comment);
         commentRepository.flush(); // flush() 호출
-        List<Comment> comments = commentRepository.findByPost_PostIdOrderByCreatedAtDesc(postId);
+        List<Comment> comments = commentRepository.findAllByPostPostId(postId);
         return new CommentDto.CommentListResponse(ExceptionCode.COMMENT_DELETE_OK, comments);
     }
 
@@ -124,7 +124,7 @@ public class CommentService {
             return new PostDto.PostResponse(ExceptionCode.POST_NOT_FOUND);
         }
 
-        List<Comment> comments = commentRepository.findByPost_PostIdOrderByCreatedAtDesc(postId);
+        List<Comment> comments = commentRepository.findAllByPostPostId(postId);
         return new CommentDto.CommentListResponse(ExceptionCode.COMMENT_GET_OK, comments);
     }
 }
