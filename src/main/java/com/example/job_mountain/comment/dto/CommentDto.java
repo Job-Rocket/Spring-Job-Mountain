@@ -12,20 +12,22 @@ import java.util.List;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 public class CommentDto {
+
     @Getter
     @Setter
     public static class CreateComment {
         private String content;
     }
+
     @Getter
     public static class CommentResponse extends ResponseType {
-
         @JsonInclude(NON_NULL)
         private Comment comment;
 
         public CommentResponse(ExceptionCode exceptionCode) {
             super(exceptionCode);
         }
+
         public CommentResponse(ExceptionCode exceptionCode, Comment comment) {
             super(exceptionCode);
             this.comment = comment;
@@ -33,8 +35,14 @@ public class CommentDto {
     }
 
     @Getter
-    public static class CommentListResponse extends ResponseType{
-        List<Comment> commentList;
+    public static class CommentListResponse extends ResponseType {
+        @JsonInclude(NON_NULL)
+        private List<Comment> commentList;
+
+        public CommentListResponse(ExceptionCode exceptionCode) {
+            super(exceptionCode);
+        }
+
         public CommentListResponse(ExceptionCode exceptionCode, List<Comment> commentList) {
             super(exceptionCode);
             this.commentList = commentList;

@@ -4,6 +4,7 @@ import com.example.job_mountain.comment.dto.CommentDto;
 import com.example.job_mountain.config.BaseEntity;
 import com.example.job_mountain.post.domain.Post;
 import com.example.job_mountain.user.domain.SiteUser;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,10 +21,12 @@ public class Comment extends BaseEntity {
     @Column(name = "comment_id")
     private Long commentId;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private SiteUser siteUser;
