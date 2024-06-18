@@ -82,9 +82,9 @@ public class ResumeService {
         if (file != null && !file.isEmpty()) {
 
             // 기존 파일 삭제
-            if (resume.getFile() != null && !resume.getFile().isEmpty()) {
-                fileService.deleteFile(resume.getResumeId(), resume.getFile(), "resume");
-            }
+//            if (resume.getFile() != null && !resume.getFile().isEmpty()) {
+//                fileService.deleteFile(resume.getResumeId(), resume.getFile(), "resume");
+//            }
 
             // 새로운 파일 저장
             String file2 = fileService.saveFile(resume.getResumeId(), file, "resume");
